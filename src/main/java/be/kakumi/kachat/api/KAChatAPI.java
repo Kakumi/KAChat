@@ -353,7 +353,6 @@ public class KAChatAPI implements Placeholder {
         message = message.replace("{channel}", channel.getPrefix());
         message = message.replace("{color}", chatManager.getPlayerColor(player));
         message = message.replace("{chat_color}", chatManager.getChatColor(player, channel));
-        message = message.replace("{channel}", channel.getPrefix());
         message = message.replace("{player}", player.getName());
         message = message.replace("&", "§"); //Because with ColourFormatter, message will not be updated
 
