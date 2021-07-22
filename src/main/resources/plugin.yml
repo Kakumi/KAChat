@@ -1,0 +1,48 @@
+name: KAChat
+version: 1.0
+main: be.kakumi.kachat.KAChat
+author: Kakumi
+softdepend: [PlaceholderAPI, Vault]
+commands:
+  kareload:
+    usage: "§cCommand: §f/kareload§c."
+    description: Reload the config file
+    permission: kachat.cmd.reload
+    permission-message: "§cYou don't have the permission !"
+  channel:
+    usage: "§cCommand: §f/channel [channel] [player] [-fp (force permission)] [-fw (force world)] [-f (force all)]§c."
+    description: Change your channel or use the one by default.
+    permission: kachat.cmd.channel
+    permission-message: "§cYou don't have the permission !"
+permissions:
+  kachat.bypass.*:
+    children:
+      kachat.bypass.capslock: true
+      kachat.bypass.spam: true
+      kachat.bypass.ads: true
+      kachat.bypass.words: true
+      kachat.bypass.cooldown: true
+      kachat.bypass.color: true
+      kachat.bypass.minsize: true
+  kachat.bypass.color:
+    description: Allow the player to use color in chat
+  kachat.bypass.capslock:
+    description: Bypass anti-capslock system
+  kachat.bypass.spam:
+    description: Bypass anti-spam system
+  kachat.bypass.ads:
+    description: Bypass anti-ads system
+  kachat.bypass.words:
+    description: Bypass blocked words system
+  kachat.bypass.cooldown:
+    description: Bypass cooldown system
+  kachat.bypass.minsize:
+    description: Bypass message min size
+  kachat.cmd.channel:
+    description: Allow player to change channel through /channel
+  kachat.cmd.channel.others:
+    description: Change the channel of a player
+  kachat.cmd.channel.force:
+    description: Allow the player to force use channel even if he doesn't have the permission
+  kachat.cmd.reload:
+    description: Allow player to reload config file and load changes
