@@ -58,9 +58,12 @@ public class ChannelCmd implements CommandExecutor {
                     StringBuilder available = new StringBuilder();
                     Iterator<Channel> iterator = KAChatAPI.getInstance().getChannels().iterator();
                     while(iterator.hasNext()) {
-                        available.append("§e").append(iterator.next().getCommand());
-                        if (iterator.hasNext()) {
-                            available.append("§c§l - ");
+                        Channel channelNext = iterator.next();
+                        if (channelNext.isListed()) {
+                            if (!available.toString().equals("")) {
+                                available.append("§c§l - ");
+                            }
+                            available.append("§e").append(iterator.next().getCommand());
                         }
                     }
                     commandSender.sendMessage(available.toString());

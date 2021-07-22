@@ -3,6 +3,12 @@ package be.kakumi.kachat.utils;
 import org.bukkit.entity.Player;
 
 public interface Formatter {
+    /***
+     * Make change on the message sent
+     * @param player Player who sent the message
+     * @param message Message sent (not formatted)
+     * @return Message with changes
+     */
     String format(Player player, String message);
 
     /***
