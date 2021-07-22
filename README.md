@@ -61,14 +61,14 @@ First you need to install the dependency through .jar file, Maven or Gradle.
 <br>Maven :
 ```xml
 <project>
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>com.github.Kakumi</groupId>
             <artifactId>KAChat</artifactId>
@@ -79,16 +79,15 @@ First you need to install the dependency through .jar file, Maven or Gradle.
 ```
 <br>Gradle:
 ```
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+    allprojects {
+        repositories {
+            maven { url 'https://jitpack.io' }
+        }
+    }
 
     dependencies {
-	        implementation 'com.github.Kakumi:KAChat:1.0'
-	}
+        implementation 'com.github.Kakumi:KAChat:1.0'
+    }
 ```
 
 Then, you can use the plugin:
@@ -119,6 +118,34 @@ public class MyPlugin extends JavaPlugin {
 All methods are documented so know how to use then.
 
 ### Examples
+#### New Channel
+```java
+public class MyPlugin extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        Channel channel = new Channel("§7[§bJail§7]", "jail");
+        channel.setListed(false);
+        channel.setColor("§8");
+        channel.setCooldown(0);
+        channel.setForInside(true);
+        channel.setWorld("");
+        channel.setRange(0);
+        channel.setPermissionToUse("");
+        channel.setPermissionToSee("");
+        channel.setSetAutoWorld("");
+        channel.setDelete(false);
+        channel.setFormat(KAChatAPI.getInstance().getDefaultFormat());
+
+        //Not necessary, you can store channel in your list and retrieve it by adding behaviour to ChatManager.
+        try {
+            KAChatAPI.getInstance().addChannel(channel);
+        } catch (AddChannelException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
 #### Checker
 ```java
 public class MyChecker implements Checker {
