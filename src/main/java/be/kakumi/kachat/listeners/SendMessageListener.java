@@ -51,11 +51,11 @@ public class SendMessageListener implements Listener {
 
             final String messageFormatFinal = messageFormat;
             final String messageFinal = message;
+            //Because we can't run event from a asynchronous thread
             Bukkit.getScheduler().runTaskLater(main, () -> Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormatFinal, messageFinal, toSend)), 1);
         } catch (CheckerException e) {
-            player.sendMessage("§c" + e.getMessage());
+            player.sendMessage(e.getMessage());
         } catch (Exception e2) {
-            player.sendMessage("§cAn error occured, please check the console.");
             e2.printStackTrace();
         }
     }

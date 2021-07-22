@@ -27,6 +27,7 @@ public class KAChatAPI implements Placeholder {
     private List<Formatter> messageFormatters; //Message formatters list
     private List<Placeholder> placeholders; //Placeholders list
     private HashMap<UUID, LastMessage> lastMessages; //Last messages list
+    private MessageManager messageManager; //All sentences from language file
 
     private KAChatAPI() {
         this.defaultFormat = "{player}§7: §f{message}";
@@ -40,6 +41,7 @@ public class KAChatAPI implements Placeholder {
         this.placeholders = new ArrayList<>();
         this.placeholders.add(this);
         this.lastMessages = new HashMap<>();
+        this.messageManager = null;
     }
 
     /***
@@ -70,31 +72,34 @@ public class KAChatAPI implements Placeholder {
     /***
      * Remove a channel from the channel list. If the channel doesn't exist, it is as if it has been removed.
      * @param channel Channel you want to remove.
+     * @return List of player who lost their channel due to deletion
      */
-    public void removeChannel(@NotNull Channel channel) {
+    public List<UUID> removeChannel(@NotNull Channel channel) {
+        List<UUID> removed = new ArrayList<>();
         for(Map.Entry<UUID, Channel> entry : playersChannel.entrySet()) {
             if (entry.getValue() == channel) {
-                Player player = Bukkit.getServer().getPlayer(entry.getKey());
-                if (player != null) {
-                    player.sendMessage("§cYou have been exclude from your channel because it no longer exist.");
-                }
+                removed.add(entry.getKey());
                 playersChannel.remove(entry.getKey());
             }
         }
 
         channels.remove(channel);
+        return removed;
     }
 
     /***
      * Remove a channel from the channel list based on the command name.
      * You can remove a channel by command if you updated a channel and want to remove the last one.
      * @param command Command of a channel you want to remove
+     * @return List of player who lost their channel due to deletion
      */
-    public void removeChannel(String command) {
+    public List<UUID> removeChannel(String command) {
         Channel channel = getChannelFromCommand(command);
         if (channel != null) {
-            removeChannel(channel);
+            return removeChannel(channel);
         }
+
+        return new ArrayList<>();
     }
 
     /***
@@ -353,5 +358,22 @@ public class KAChatAPI implements Placeholder {
         message = message.replace("&", "§"); //Because with ColourFormatter, message will not be updated
 
         return message.trim();
+    }
+
+    /***
+     * Get the message manager to get all messages for this plugin
+     * @return MessageManager
+     */
+    public MessageManager getMessageManager() {
+        return messageManager;
+    }
+
+    /***
+     * Don't change this from your plugin
+     * Set the message manager to get all messages for this plugin
+     * @param messageManager MessageManager
+     */
+    public void setMessageManager(@NotNull MessageManager messageManager) {
+        this.messageManager = messageManager;
     }
 }

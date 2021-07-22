@@ -1,7 +1,10 @@
 package be.kakumi.kachat.exceptions;
 
+import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.utils.MessageManager;
+
 public class SecurityCooldownException extends CheckerException {
     public SecurityCooldownException(double seconds) {
-        super("You can't send your message, you still have to wait " + String.format("%.1f", seconds) + " seconds.");
+        super(KAChatAPI.getInstance().getMessageManager().get(MessageManager.SECURITY_COOLDOWN, null, String.format("%.1f", seconds)));
     }
 }

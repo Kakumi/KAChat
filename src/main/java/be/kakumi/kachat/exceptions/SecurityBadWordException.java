@@ -1,7 +1,10 @@
 package be.kakumi.kachat.exceptions;
 
+import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.utils.MessageManager;
+
 public class SecurityBadWordException extends CheckerException {
     public SecurityBadWordException(String word) {
-        super("Your message contains words who are not allowed : §4" + word + "§c.");
+        super(KAChatAPI.getInstance().getMessageManager().get(MessageManager.SECURITY_BAD_WORD, null, word));
     }
 }

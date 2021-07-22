@@ -1,4 +1,7 @@
+lang: "en"
+usePrefix: true
 security:
+  minSize: 0
   antiCapslock:
     enable: true
     percent: 70 #If total of caps are 70% or more, the message will be blocked
@@ -23,7 +26,6 @@ notification:
 grammar: 
   capitaliseFirstLetter: true
   forceDotAtTheEnd: true
-  minSize: 0
 chat: 
   format: "{channel} {color}{player}§7: {chat_color}{message}"
   defaultChannel: "global" #ID of a channel from chat.channels

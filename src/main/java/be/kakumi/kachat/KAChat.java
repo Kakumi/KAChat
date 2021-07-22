@@ -8,6 +8,7 @@ import be.kakumi.kachat.commands.ReloadConfigCmd;
 import be.kakumi.kachat.enums.PlayerChangeChannelReason;
 import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.exceptions.AddChannelException;
+import be.kakumi.kachat.exceptions.MessagesFileException;
 import be.kakumi.kachat.listeners.ForceUpdateChannelListener;
 import be.kakumi.kachat.listeners.SendMessageListener;
 import be.kakumi.kachat.middlewares.message.ColorFormatter;
@@ -18,6 +19,7 @@ import be.kakumi.kachat.middlewares.security.*;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.timers.ChatSaverRunnable;
 import be.kakumi.kachat.utils.ChatSaver;
+import be.kakumi.kachat.utils.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,23 +29,16 @@ import java.util.Map;
 import java.util.UUID;
 
 public class KAChat extends JavaPlugin {
-    private static final String PREFIX = "§6[§bKAChat§6]";
     private ChatSaverRunnable timer;
 
     @Override
     public void onEnable() {
         super.onEnable();
         saveDefaultConfig();
+        reloadConfig();
 
         loadListeners();
         loadCommands();
-
-        reloadConfig();
-        //-- Load from reloadConfig
-        //loadChannels();
-        //loadCheckers();
-        //loadMessageFormatters();
-        //loadChatSaver();
 
         loadDependencies();
     }
@@ -84,10 +79,25 @@ public class KAChat extends JavaPlugin {
     @Override
     public void reloadConfig() {
         super.reloadConfig();
-        loadChannels();
-        loadCheckers();
-        loadMessageFormatters();
-        loadChatSaver();
+        if (loadMessageManager()) {
+            loadChannels();
+            loadCheckers();
+            loadMessageFormatters();
+            loadChatSaver();
+        }
+    }
+
+    private boolean loadMessageManager() {
+        try {
+            MessageManager messageManager = new MessageManager(this);
+            KAChatAPI.getInstance().setMessageManager(messageManager);
+
+            return true;
+        } catch (MessagesFileException e) {
+            Error(e.getMessage());
+            getPluginLoader().disablePlugin(this);
+            return false;
+        }
     }
 
     private void loadListeners() {
@@ -98,7 +108,9 @@ public class KAChat extends JavaPlugin {
     @SuppressWarnings("ConstantConditions")
     private void loadCommands() {
         getCommand("channel").setExecutor(new ChannelCmd());
+        getCommand("channel").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
         getCommand("kareload").setExecutor(new ReloadConfigCmd(this));
+        getCommand("kareload").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -137,11 +149,6 @@ public class KAChat extends JavaPlugin {
                 }
 
                 try {
-                    //If it exist (after config reload) we override it, maybe there is others channels from others plugins.
-                    //That's why we don't clear the list after the reload.
-                    if (KAChatAPI.getInstance().getChannelFromCommand(channel.getCommand()) != null) {
-                        KAChatAPI.getInstance().removeChannel(channel.getCommand());
-                    }
                     KAChatAPI.getInstance().addChannel(channel);
                 } catch (AddChannelException e) {
                     Error("Unable to use channel " + name + " : " + e.getMessage());
@@ -159,7 +166,7 @@ public class KAChat extends JavaPlugin {
             if (newChannel == null) {
                 if (playerFound != null) {
                     Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(playerFound, entry.getValue(), defaultChannel, PlayerChangeChannelReason.DELETED));
-                    playerFound.sendMessage("§cYour channel has been set to default because the last one has been deleted.");
+                    playerFound.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_DEFAULT_DELETED));
                 }
             } else {
                 Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(playerFound, entry.getValue(), newChannel, PlayerChangeChannelReason.UPDATED));
@@ -188,7 +195,7 @@ public class KAChat extends JavaPlugin {
             KAChatAPI.getInstance().getCheckers().add(new AntiAdvertisement());
         }
         KAChatAPI.getInstance().getCheckers().add(new AntiBadWords(getConfig().getStringList("security.badWords")));
-        KAChatAPI.getInstance().getCheckers().add(new GrammarMinSize(getConfig().getInt("grammar.minSize")));
+        KAChatAPI.getInstance().getCheckers().add(new GrammarMinSize(getConfig().getInt("security.minSize")));
         KAChatAPI.getInstance().getCheckers().add(new CooldownMessage());
         if (getConfig().getBoolean("security.antiSpam.enable")) {
             KAChatAPI.getInstance().getCheckers().add(new AntiSpam(getConfig().getInt("security.antiSpam.max")));
@@ -251,7 +258,7 @@ public class KAChat extends JavaPlugin {
     }
 
     public void Log(String message) {
-        getServer().getConsoleSender().sendMessage(PREFIX + " §f" + message);
+        getServer().getConsoleSender().sendMessage(MessageManager.PREFIX + " §f" + message);
     }
 
     public void Error(String message) {
