@@ -58,8 +58,36 @@ Placeholders are used to replace some text in the message by some plugins values
 ## API
 ### How to use the API
 First you need to install the dependency through .jar file, Maven or Gradle.
-<br>Maven : _Coming soon_
-<br>Gradle: _Coming soon_
+<br>Maven :
+```xml
+<project>
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+	<dependency>
+	    <groupId>com.github.Kakumi</groupId>
+	    <artifactId>KAChat</artifactId>
+	    <version>Tag</version>
+	</dependency>
+</project>
+```
+<br>Gradle:
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+    dependencies {
+	        implementation 'com.github.Kakumi:KAChat:Tag'
+	}
+```
 
 Then, you can use the plugin:
 ```java
@@ -152,6 +180,22 @@ public class MyPlugin extends JavaPlugin {
 ```java
 public class CustomChatManager extends ChatManager {
     @Override
+    public List<Player> getNearbyPlayers(Channel channel, Player player) {
+        List<Player> nearbyPlayers = new ArrayList<>();
+        if (channel.getChannelType() == MyEnum.TEST) {
+            nearbyPlayers.add(player);
+            Player anotherPlayer = Bukkit.getServer().getPlayerExact("test");
+            if (anotherPlayer != null) {
+                nearbyPlayers.add(anotherPlayer);   
+            }
+        } else {
+            return super.getNearbyPlayers(channel, player);
+        }
+
+        return nearbyPlayers;
+    }
+
+    @Override
     public String getPlayerColor(Player player) {
         if (player.hasPermission("op")) {
             return "&b";
@@ -171,7 +215,7 @@ public class MyPlugin extends JavaPlugin {
 
 #### Custom Events
 ```java
-public class CustomListener extends Event {
+public class CustomListener implements Listener {
     @EventHandler
     public void onChannelReceiveMessage(ChannelReceiveMessageEvent event) {
         
