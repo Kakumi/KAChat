@@ -1,12 +1,15 @@
+lang: "en" #Name of the file for messages
+usePrefix: true #Use prefix for each message
 security:
+  minSize: 0 #Min size of the message
   antiCapslock:
     enable: true
     percent: 70 #If total of caps are 70% or more, the message will be blocked
   antiSpam: 
     enable: true
     max: 3 #Allow to send X times the same message
-  antiAds: true 
-  badWords: 
+  antiAds: true #Blocks URLs and servers API
+  badWords: #Blocks these words
     - "fuck"
   save:
     enable: false
@@ -16,47 +19,52 @@ notification:
     enable: true
     symbolToUse: "" #When you write a player name, this must be before the player to activate the mention
     symbolToSee: "@" #It will replace symbolToUse with this icon to set something like : @Kakumi
-    color: "&e"
-    sound: true
-  privateMessage:
-    sound: true
+    color: "&e" #Color of the mention
+    sound: true #Play sound
 grammar: 
-  capitaliseFirstLetter: true
-  forceDotAtTheEnd: true
-  minSize: 0
+  capitaliseFirstLetter: true #Capitalize first letter of the message
+  forceDotAtTheEnd: true #Put a dot at the end of the message
 chat: 
-  format: "{channel} {color}{player}§7: {chat_color}{message}"
+  format: "{channel} {color}{player}§7: {chat_color}{message}" #Default format
   defaultChannel: "global" #ID of a channel from chat.channels
   channels:
     global:
-      default: true
       enable: true
-      listed: true
-      setAutoWorld: "" #Automatically use this channel if player has the permission to use in this world
-      prefix: ""
-      command: "global"
-      color: "&f"
-      insideRestriction: false
-      world: ""
-      range: 0
-      permissionToUse: ""
-      permissionToSee: ""
-      cooldown: 0
+      listed: true #List this channel when you used /channel
+      autoWorld: "" #Automatically use this channel if player has the permission to use in this world
+      prefix: "" #Prefix for this channel
+      command: "global" #ID / Name of this channel (also use with /channel)
+      color: "&f" #Color of the chat
+      insideRestriction: false #Must be inside to receive messages
+      world: "" #Use this channel only inside this world
+      range: 0 #Only players inside this range can receive the message
+      permissionToUse: "" #Permission to use this channel (/channel)
+      permissionToSee: "" #Permission to see message from this channel
+      cooldown: 0 #Cooldown between each message for this channel
     proximity:
-      default: false
       enable: true
       listed: true
-      setWorld: ""
+      autoWorld: "world_nether"
       prefix: "&7[&8Proximity&7]"
       command: "prox"
-      color: "&f"
+      color: "&e"
       cooldown: 5
       insideRestriction: false
-      world: ""
+      world: "world_nether"
       range: 50
       permissionToUse: ""
       permissionToSee: ""
       format: "&6{player}&7: {chat_color}{message}"
-
-#https://www.spigotmc.org/resources/%E2%9C%8F%EF%B8%8F-iridescent-%E2%9C%8F%EF%B8%8F-1-16-x-add-new-hex-colors-to-your-server-supports-gradients.81322/
-#https://www.spigotmc.org/resources/chatty-lightweight-universal-bukkit-chat-system-solution-1-5-2-1-17.59411/
+    staff:
+      enable: true
+      listed: true
+      autoWorld: ""
+      prefix: "&8[&cStaff&8]"
+      command: "staff"
+      color: "&f"
+      cooldown: 0
+      insideRestriction: false
+      world: ""
+      range: 0
+      permissionToUse: "kachat.channel.staff"
+      permissionToSee: "kachat.channel.staff"

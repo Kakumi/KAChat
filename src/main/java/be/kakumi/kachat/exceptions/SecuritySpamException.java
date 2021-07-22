@@ -1,7 +1,10 @@
 package be.kakumi.kachat.exceptions;
 
+import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.utils.MessageManager;
+
 public class SecuritySpamException extends CheckerException {
     public SecuritySpamException() {
-        super("Your message is the same as before, you can't send it again.");
+        super(KAChatAPI.getInstance().getMessageManager().get(MessageManager.SECURITY_SPAM));
     }
 }

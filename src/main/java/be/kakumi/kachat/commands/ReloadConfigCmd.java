@@ -1,6 +1,8 @@
 package be.kakumi.kachat.commands;
 
 import be.kakumi.kachat.KAChat;
+import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.utils.MessageManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +16,7 @@ public class ReloadConfigCmd implements CommandExecutor {
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         main.reloadConfig();
-        commandSender.sendMessage("§aConfig has been successfully reloaded");
+        commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.RELOAD_CONFIG));
 
         return true;
     }

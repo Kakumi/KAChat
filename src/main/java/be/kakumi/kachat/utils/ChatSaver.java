@@ -18,6 +18,11 @@ public class ChatSaver {
         this.file = new File(main.getDataFolder() + "/" + filename + ".log");
     }
 
+    /***
+     * Create the log file
+     * @return true if file is created
+     * @throws IOException Throw the error if can't create the file
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean createFile() throws IOException {
         if (file.exists()) return true;
@@ -26,6 +31,9 @@ public class ChatSaver {
         return file.createNewFile();
     }
 
+    /***
+     * Archive the log file by renaming it to : filename-date-number.log
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void rename() {
         if (file.exists()) {
@@ -43,6 +51,12 @@ public class ChatSaver {
         }
     }
 
+    /***
+     * Add message into messages list, this list is used to save all the message at the same time every X seconds
+     * (Through a BukkitRunnable to avoid read - write - close operation every time a message is sent)
+     * @param message Message sent (formatted)
+     * @param sent If the message is send in the chat or not
+     */
     public void addMessage(String message, boolean sent) {
         Calendar date = Calendar.getInstance();
         StringBuilder tags = new StringBuilder();
@@ -67,10 +81,19 @@ public class ChatSaver {
         messages.add(tags + " " + message);
     }
 
+    /***
+     * Add message into messages list, this list is used to save all the message at the same time every X seconds
+     * (Through a BukkitRunnable to avoid read - write - close operation every time a message is sent)
+     * @param message Message sent (formatted)
+     */
     public void addMessage(String message) {
         addMessage(message, true);
     }
 
+    /***
+     * Save all the messages in the log file.
+     * @throws IOException Throw the error if can't save in the file
+     */
     public void saveMessages() throws IOException {
         if (messages.size() > 0) {
             FileOutputStream fos = new FileOutputStream(file, true);

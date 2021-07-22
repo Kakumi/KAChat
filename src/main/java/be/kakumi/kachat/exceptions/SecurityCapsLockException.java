@@ -1,7 +1,10 @@
 package be.kakumi.kachat.exceptions;
 
+import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.utils.MessageManager;
+
 public class SecurityCapsLockException extends CheckerException {
     public SecurityCapsLockException() {
-        super("Your message contains too much characters in uppercase, please fix it.");
+        super(KAChatAPI.getInstance().getMessageManager().get(MessageManager.SECURITY_CAPSLOCK));
     }
 }

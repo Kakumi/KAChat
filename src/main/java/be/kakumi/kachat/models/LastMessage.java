@@ -14,15 +14,46 @@ public class LastMessage {
         this.counterSameMessage = 0;
     }
 
+    /***
+     * Get the last message sent by the player
+     * @return Last message
+     */
     public String getMessage() {
         return message;
     }
 
+    /***
+     * Get the date of the last message sent by the player
+     * @return Date of the last message
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /***
+     * Get the number of time the player send the same message.
+     * @return Same message counter
+     */
+    public int getCounterSameMessage() {
+        return counterSameMessage;
+    }
+
+    /***
+     * Update the last sent message
+     * @param message Message sent
+     */
     public void update(String message) {
         this.message = message;
         this.date = new Date();
     }
 
+    /***
+     * Intelligent anti-spam, it makes some checks to know if the message is is quite similar to the last one.
+     * If you reach and amount of spam, it will return true, else, even if your message is similar, it will return false.
+     * @param message Message sent (formatted)
+     * @param max Max number of same message can be send
+     * @return True if the message is the same, false if the message is different or counter doesn't reach the max
+     */
     public boolean isSameMessage(String message, int max) {
         if (this.message.equalsIgnoreCase(message)) counterSameMessage++;
         //else if (message.length() == this.message.length() && ) counterSameMessage++;
@@ -35,6 +66,11 @@ public class LastMessage {
         return counterSameMessage != 0 && counterSameMessage >= max;
     }
 
+    /***
+     * Check if you can send the message despite the cooldown
+     * @param seconds How many seconds you have to wait between each message
+     * @return True if you can send the message
+     */
     public boolean canSend(int seconds) {
         Calendar c1 = Calendar.getInstance();
         c1.setTime(date);
@@ -42,6 +78,11 @@ public class LastMessage {
         return c1.compareTo(Calendar.getInstance()) <= 0;
     }
 
+    /***
+     * Get how many seconds you still have to wait
+     * @param seconds How many seconds you have to wait between each message
+     * @return Seconds you still have to wait
+     */
     public double getSecondsRemaining(int seconds) {
         Calendar c1 = Calendar.getInstance();
         c1.setTime(date);
@@ -49,7 +90,11 @@ public class LastMessage {
         return ((double) c1.getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) / 1000;
     }
 
-    //Compare message by length, check if difference after replace is lower than 20%
+    /***
+     * Compare message by length, check if difference after replace is lower than 20%.
+     * @param message Message sent
+     * @return True if message is similar than the last one.
+     */
     private boolean messageIsSimilarByLength(String message) {
         if (this.message.length() - message.length() >= 7) return false;
 
@@ -68,7 +113,14 @@ public class LastMessage {
         return ((double) wordClear.length() / size) * 100 <= 20;
     }
 
-    //Compare message by words, check if the words are similar
+    /***
+     * Compare message by words, check if the words are similar.
+     * It will remove useless characters and then check for each word in the last message and the message sent
+     * if word are similar. It calculate how many word are similar divided by amount of word and check if the accuracy
+     * is more or equals than 80%.
+     * @param message Message sent
+     * @return True if message is similar than the last one.
+     */
     private boolean messageIsSimilarByWords(String message) {
         String[] wordsSmallerMessage;
         String[] wordsBiggerMessage;

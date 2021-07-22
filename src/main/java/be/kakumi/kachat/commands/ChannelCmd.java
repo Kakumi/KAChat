@@ -1,7 +1,9 @@
 package be.kakumi.kachat.commands;
 
 import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.enums.PlayerChangeChannelReason;
 import be.kakumi.kachat.models.Channel;
+import be.kakumi.kachat.utils.MessageManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,49 +20,53 @@ public class ChannelCmd implements CommandExecutor {
         if (strings.length == 0) {
             if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;
-                player.sendMessage("§aYou set your channel to the default one.");
-                KAChatAPI.getInstance().getPlayersChannel().remove(player.getUniqueId());
+                player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_DEFAULT));
+                KAChatAPI.getInstance().removePlayerChannel(player, PlayerChangeChannelReason.COMMAND);
             } else {
-                commandSender.sendMessage("§cYou must be a player to execute that command.");
+                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.MUST_BE_A_PLAYER));
             }
         } else {
             Channel channel = KAChatAPI.getInstance().getChannelFromCommand(strings[0]);
             Player playerToChange = null;
+            PlayerChangeChannelReason reason;
             String fullCommand = StringUtils.join(strings, " ");
             boolean force = Pattern.matches(".*\\b[-f]\\b.*", fullCommand);
             boolean forcePermission = force || fullCommand.contains("-fp");
             boolean forceWorld = force || fullCommand.contains("-fw");
 
             if ((force || forcePermission || forceWorld) && !commandSender.hasPermission("kachat.cmd.channel.force")) {
-                commandSender.sendMessage("§cYou don't have the permission to use force tag.");
+                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION_FORCE_TAGS));
             }
 
             if (strings.length >= 2) {
+                reason = PlayerChangeChannelReason.COMMAND_OTHERS;
                 if (commandSender.hasPermission("kachat.cmd.channel.others")) {
                     playerToChange = Bukkit.getServer().getPlayer(strings[1]);
                     if (playerToChange == null) {
-                        commandSender.sendMessage("§cYou can't change the channel of §f" + strings[1] + " §cbecause he is not connected.");
+                        commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NOT_CONNECTED, strings[1], null));
                     }
                 } else {
-                    commandSender.sendMessage("§cYou don't have the permission to set the channel for a player.");
+                    commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_SET));
                 }
             } else {
+                reason = PlayerChangeChannelReason.COMMAND;
                 if (commandSender instanceof Player) {
                     playerToChange = (Player) commandSender;
                 } else {
-                    commandSender.sendMessage("§cYou must be a player to execute that command.");
+                    commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.MUST_BE_A_PLAYER));
                 }
             }
 
             if (playerToChange != null) {
                 if (channel == null) {
-                    commandSender.sendMessage("§cThis channel doesn't exist, channels available :");
+                    commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_DOESNT_EXIST));
                     StringBuilder available = new StringBuilder();
-                    Iterator<Channel> iterator = KAChatAPI.getInstance().getChannels().iterator();
-                    while(iterator.hasNext()) {
-                        available.append("§e").append(iterator.next().getCommand());
-                        if (iterator.hasNext()) {
-                            available.append("§c§l - ");
+                    for (Channel channelNext : KAChatAPI.getInstance().getChannels()) {
+                        if (channelNext.isListed()) {
+                            if (!available.toString().equals("")) {
+                                available.append("§c§l - ");
+                            }
+                            available.append("§e").append(channelNext.getCommand());
                         }
                     }
                     commandSender.sendMessage(available.toString());
@@ -68,22 +74,22 @@ public class ChannelCmd implements CommandExecutor {
                     if (forcePermission || channel.hasPermissionToUse(playerToChange)) {
                         if (forceWorld || channel.getWorld().equals("") || playerToChange.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
                             if (playerToChange != commandSender) {
-                                commandSender.sendMessage("§aYou change the channel of §f" + playerToChange.getName() + " §ato §f" + channel.getCommand() + "§a.");
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_PLAYER, playerToChange.getName(), channel.getCommand()));
                             }
-                            playerToChange.sendMessage("§aYour channel is set to §f" + channel.getCommand() + "§a.");
-                            KAChatAPI.getInstance().setPlayerChannel(playerToChange, channel);
+                            playerToChange.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, channel.getCommand(), null));
+                            KAChatAPI.getInstance().setPlayerChannel(playerToChange, channel, reason);
                         } else {
                             if (playerToChange == commandSender) {
-                                commandSender.sendMessage("§cYou can't use this channel because you are not in the world §f" + channel.getWorld() + "§c.");
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, channel.getWorld(), null));
                             } else {
-                                commandSender.sendMessage(playerToChange.getName() + " §ccan't use this channel because he is not in the world §f" + channel.getWorld() + "§c.");
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_PLAYER, playerToChange.getName(), channel.getWorld()));
                             }
                         }
                     } else {
                         if (playerToChange == commandSender) {
-                            commandSender.sendMessage("§cYou don't have the permission to use this channel.");
+                            commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_MYSELF));
                         } else {
-                            commandSender.sendMessage(playerToChange.getName() + " §cdon't have the permission to use this channel.");
+                            commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_PLAYER, playerToChange.getName(), null));
                         }
                     }
                 }
