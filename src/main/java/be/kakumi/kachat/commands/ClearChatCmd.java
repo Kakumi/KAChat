@@ -1,8 +1,6 @@
 package be.kakumi.kachat.commands;
 
 import be.kakumi.kachat.api.KAChatAPI;
-import be.kakumi.kachat.enums.PlayerChangeChannelReason;
-import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.MessageManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -12,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class ClearChatCmd implements CommandExecutor {

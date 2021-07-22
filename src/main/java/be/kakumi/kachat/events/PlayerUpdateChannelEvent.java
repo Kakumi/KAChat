@@ -7,8 +7,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class PlayerUpdateChannelEvent extends Event {
     private final static HandlerList HANDLERS = new HandlerList();
     private final Player player;

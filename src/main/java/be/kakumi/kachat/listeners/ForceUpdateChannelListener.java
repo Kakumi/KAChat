@@ -2,7 +2,6 @@ package be.kakumi.kachat.listeners;
 
 import be.kakumi.kachat.api.KAChatAPI;
 import be.kakumi.kachat.enums.PlayerChangeChannelReason;
-import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.MessageManager;
 import org.bukkit.entity.Player;

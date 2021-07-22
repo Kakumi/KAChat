@@ -2,9 +2,7 @@ package be.kakumi.kachat.utils;
 
 import be.kakumi.kachat.KAChat;
 import be.kakumi.kachat.exceptions.MessagesFileException;
-import be.kakumi.kachat.models.Channel;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
