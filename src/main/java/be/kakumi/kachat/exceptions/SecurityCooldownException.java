@@ -5,6 +5,6 @@ import be.kakumi.kachat.utils.MessageManager;
 
 public class SecurityCooldownException extends CheckerException {
     public SecurityCooldownException(double seconds) {
-        super(KAChatAPI.getInstance().getMessageManager().get(MessageManager.SECURITY_COOLDOWN, null, String.format("%.1f", seconds)));
+        super(KAChatAPI.getInstance().getMessageManager().get(MessageManager.SECURITY_COOLDOWN, String.format("%.1f", seconds), null));
     }
 }

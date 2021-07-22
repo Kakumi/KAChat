@@ -10,7 +10,7 @@ This plugin is a chat manager for minecraft. Avaible from spigot 1.7.10 to 1.16.
 
 ## Permissions
 - **kachat.bypass.***: Allow the player to bypass all security
-- **kachat.bypass.color**: Allow the player to use color in chat
+- **kachat.bypass.color**: Allow the player to use color and format in chat
 - **kachat.bypass.capslock**: Bypass anti-capslock system
 - **kachat.bypass.spam**: Bypass anti-spam system
 - **kachat.bypass.ads**: Bypass anti-ads system
@@ -39,6 +39,8 @@ Checkers are used to be sure the message respect some restrictions otherwise the
 Formatters are used to make changes on the sent message.
 1. **Capitalize**: capitalize the first letter of the message
 1. **Auto dot**: Add a dot at the end of the sentence
+1. **Mention**: Mention player's in the chat and play sound
+1. **Color**: Allow players to use color and format in the chat (if they have the permission)
 
 ### Placeholders
 Placeholders are used to replace some text in the message by some plugins values.
@@ -152,7 +154,7 @@ public class CustomChatManager extends ChatManager {
     @Override
     public String getPlayerColor(Player player) {
         if (player.hasPermission("op")) {
-            return "§4";
+            return "&b";
         }
 
         return super.getPlayerColor(player);

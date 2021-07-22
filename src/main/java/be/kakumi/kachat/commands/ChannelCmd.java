@@ -61,14 +61,12 @@ public class ChannelCmd implements CommandExecutor {
                 if (channel == null) {
                     commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_DOESNT_EXIST));
                     StringBuilder available = new StringBuilder();
-                    Iterator<Channel> iterator = KAChatAPI.getInstance().getChannels().iterator();
-                    while(iterator.hasNext()) {
-                        Channel channelNext = iterator.next();
+                    for (Channel channelNext : KAChatAPI.getInstance().getChannels()) {
                         if (channelNext.isListed()) {
                             if (!available.toString().equals("")) {
                                 available.append("§c§l - ");
                             }
-                            available.append("§e").append(iterator.next().getCommand());
+                            available.append("§e").append(channelNext.getCommand());
                         }
                     }
                     commandSender.sendMessage(available.toString());
@@ -78,11 +76,11 @@ public class ChannelCmd implements CommandExecutor {
                             if (playerToChange != commandSender) {
                                 commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_PLAYER, playerToChange.getName(), channel.getCommand()));
                             }
-                            playerToChange.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, null, channel.getCommand()));
+                            playerToChange.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, channel.getCommand(), null));
                             KAChatAPI.getInstance().setPlayerChannel(playerToChange, channel, reason);
                         } else {
                             if (playerToChange == commandSender) {
-                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, null, channel.getWorld()));
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, channel.getWorld(), null));
                             } else {
                                 commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_PLAYER, playerToChange.getName(), channel.getWorld()));
                             }

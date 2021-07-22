@@ -104,6 +104,7 @@ public class ChatManager {
      * @return Player color in the chat (& or §)
      */
     public String getPlayerColor(Player player) {
+        if (player.isOp()) return "&4";
         return "&f";
     }
 

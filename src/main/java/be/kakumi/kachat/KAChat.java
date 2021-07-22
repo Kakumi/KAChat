@@ -139,7 +139,7 @@ public class KAChat extends JavaPlugin {
                 channel.setRange(getConfig().getInt("chat.channels." + name + ".range"));
                 channel.setPermissionToUse(getConfig().getString("chat.channels." + name + ".permissionToUse"));
                 channel.setPermissionToSee(getConfig().getString("chat.channels." + name + ".permissionToSee"));
-                channel.setSetAutoWorld(getConfig().getString("chat.channels." + name + ".setAutoWorld"));
+                channel.setSetAutoWorld(getConfig().getString("chat.channels." + name + ".autoWorld"));
                 channel.setDelete(true);
                 if (getConfig().isSet("chat.channels." + name + ".format")) {
                     channel.setFormat(getConfig().getString("chat.channels." + name + ".format"));
@@ -211,6 +211,8 @@ public class KAChat extends JavaPlugin {
     private void loadMessageFormatters() {
         KAChatAPI.getInstance().clearMessageFormatters();
 
+        //First because others formatter can add color
+        KAChatAPI.getInstance().getMessageFormatters().add(new ColorFormatter());
         if (getConfig().getBoolean("grammar.capitaliseFirstLetter")) {
             KAChatAPI.getInstance().getMessageFormatters().add(new GrammarUppercase());
         }
@@ -225,7 +227,6 @@ public class KAChat extends JavaPlugin {
                     getConfig().getBoolean("notification.mention.sound")
             ));
         }
-        KAChatAPI.getInstance().getMessageFormatters().add(new ColorFormatter());
 
         Log("§f" + KAChatAPI.getInstance().getMessageFormatters().size() + " §aformatters registered.");
     }

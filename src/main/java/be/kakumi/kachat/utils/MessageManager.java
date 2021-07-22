@@ -65,10 +65,10 @@ public class MessageManager {
         if (messages.isSet(path)) {
             String messageFile = messages.getString(path).replace("&", "§");
             if (p1 != null) {
-                messageFile = messageFile.replace("%1", p1);
+                messageFile = messageFile.replace("$1", p1);
             }
             if (p2 != null) {
-                messageFile = messageFile.replace("%2", p2);
+                messageFile = messageFile.replace("$2", p2);
             }
             message.append(messageFile);
 

@@ -12,7 +12,7 @@ public class AntiAdvertisement implements Checker {
         if (player.hasPermission("kachat.bypass.ads")) return true;
 
         String url = "(https?://)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)";
-        String ip = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:\\d{5})?";
+        String ip = "(?:\\w+|\\d{1,3})\\.(?:\\w+|\\d{1,3})\\.(?:\\w+|\\d{1,3})?(\\.\\d{1,3})?(:\\d{5})?";
         if (Pattern.matches(url, message) || Pattern.matches(ip, message)) {
             throw new SecurityAdsException();
         }
