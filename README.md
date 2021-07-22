@@ -68,11 +68,13 @@ First you need to install the dependency through .jar file, Maven or Gradle.
 		</repository>
 	</repositories>
 
-	<dependency>
-	    <groupId>com.github.Kakumi</groupId>
-	    <artifactId>KAChat</artifactId>
-	    <version>Tag</version>
-	</dependency>
+	<dependencies>
+        <dependency>
+            <groupId>com.github.Kakumi</groupId>
+            <artifactId>KAChat</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 </project>
 ```
 <br>Gradle:
@@ -85,7 +87,7 @@ First you need to install the dependency through .jar file, Maven or Gradle.
 	}
 
     dependencies {
-	        implementation 'com.github.Kakumi:KAChat:Tag'
+	        implementation 'com.github.Kakumi:KAChat:1.0'
 	}
 ```
 
