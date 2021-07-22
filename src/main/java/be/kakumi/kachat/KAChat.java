@@ -4,6 +4,7 @@ import be.kakumi.kachat.api.KAChatAPI;
 import be.kakumi.kachat.api.PlaceholderAPI;
 import be.kakumi.kachat.api.VaultAPI;
 import be.kakumi.kachat.commands.ChannelCmd;
+import be.kakumi.kachat.commands.ClearChatCmd;
 import be.kakumi.kachat.commands.ReloadConfigCmd;
 import be.kakumi.kachat.enums.PlayerChangeChannelReason;
 import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
@@ -111,6 +112,8 @@ public class KAChat extends JavaPlugin {
         getCommand("channel").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
         getCommand("kareload").setExecutor(new ReloadConfigCmd(this));
         getCommand("kareload").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
+        getCommand("clearchat").setExecutor(new ClearChatCmd());
+        getCommand("clearchat").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
     }
 
     @SuppressWarnings("ConstantConditions")

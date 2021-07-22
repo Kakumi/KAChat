@@ -16,6 +16,8 @@ public class MessageManager {
     public static final String NO_PERMISSION_FORCE_TAGS = "no_permission_force_tag";
     public static final String MUST_BE_A_PLAYER = "must_be_a_player";
     public static final String RELOAD_CONFIG = "reload_config";
+    public static final String CLEAR_CHAT = "clear_chat";
+    public static final String CLEAR_CHAT_ALL = "clear_chat_all";
     public static final String CHANNEL_SET_DEFAULT = "channel.set_default";
     public static final String CHANNEL_SET_DEFAULT_DELETED = "channel.set_default_deleted";
     public static final String CHANNEL_NOT_CONNECTED = "channel.not_connected";

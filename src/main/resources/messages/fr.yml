@@ -1,6 +1,8 @@
 no_permission_force_tag: "&cVous n'avez pas la permission d'utiliser le tag de force."
 must_be_a_player: "&cVous devez être un joueur pour éxécuter cette commande."
 reload_config: "&aLa config a correctement été rechargée."
+clear_chat: "&aVous avez nettoyé le chat."
+clear_chat_all: "&aVous avez nettoyé le chat pour tous le monde."
 channel:
   set_default: "&aVous avez mis votre canal à celui par défaut."
   set_default_deleted: "&cVotre canal a été mis à celui par défaut car le dernier a été supprimé."

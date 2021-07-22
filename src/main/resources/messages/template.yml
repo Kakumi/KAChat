@@ -1,6 +1,8 @@
 no_permission_force_tag: "&cYou don't have the permission to use force tag."
 must_be_a_player: "&cYou must be a player to execute that command."
-reload_config: "&aConfig has been successfully reloaded"
+reload_config: "&aConfig has been successfully reloaded."
+clear_chat: "&aYou have clear the chat."
+clear_chat_all: "&aYou have clear the chat for everyone."
 channel:
   set_default: "&aYou set your channel to the default one."
   set_default_deleted: "&cYour channel has been set to default because the last one has been deleted."
