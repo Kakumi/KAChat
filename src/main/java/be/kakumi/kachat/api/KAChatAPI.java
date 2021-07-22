@@ -1,5 +1,7 @@
 package be.kakumi.kachat.api;
 
+import be.kakumi.kachat.enums.PlayerChangeChannelReason;
+import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.exceptions.AddChannelException;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.models.LastMessage;
@@ -193,8 +195,38 @@ public class KAChatAPI implements Placeholder {
      * @param channel Channel to use
      */
     public void setPlayerChannel(Player player, Channel channel) {
+        setPlayerChannel(player, channel, PlayerChangeChannelReason.UNKNOWN);
+    }
+
+    /***
+     * Change the channel the player uses.
+     * @param player Player you want to change his channel
+     * @param channel Channel to use
+     * @param reason Reason of the change
+     */
+    public void setPlayerChannel(Player player, Channel channel, PlayerChangeChannelReason reason) {
+        Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(player, playersChannel.get(player.getUniqueId()), channel, reason));
+
         playersChannel.remove(player.getUniqueId());
         playersChannel.put(player.getUniqueId(), channel);
+    }
+
+    /***
+     * Reset the player channel to default
+     * @param player Player to reset
+     * @param reason Reason of the change
+     */
+    public void removePlayerChannel(Player player, PlayerChangeChannelReason reason) {
+        Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(player, playersChannel.get(player.getUniqueId()), defaultChannel, reason));
+        playersChannel.remove(player.getUniqueId());
+    }
+
+    /***
+     * Reset the player channel to default
+     * @param player Player to reset
+     */
+    public void removePlayerChannel(Player player) {
+        removePlayerChannel(player, PlayerChangeChannelReason.UNKNOWN);
     }
 
     /***

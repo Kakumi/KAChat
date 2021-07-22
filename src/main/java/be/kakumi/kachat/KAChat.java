@@ -5,6 +5,8 @@ import be.kakumi.kachat.api.PlaceholderAPI;
 import be.kakumi.kachat.api.VaultAPI;
 import be.kakumi.kachat.commands.ChannelCmd;
 import be.kakumi.kachat.commands.ReloadConfigCmd;
+import be.kakumi.kachat.enums.PlayerChangeChannelReason;
+import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.exceptions.AddChannelException;
 import be.kakumi.kachat.listeners.ForceUpdateChannelListener;
 import be.kakumi.kachat.listeners.SendMessageListener;
@@ -36,11 +38,12 @@ public class KAChat extends JavaPlugin {
         loadListeners();
         loadCommands();
 
+        reloadConfig();
         //-- Load from reloadConfig
         //loadChannels();
         //loadCheckers();
         //loadMessageFormatters();
-        loadChatSaver();
+        //loadChatSaver();
 
         loadDependencies();
     }
@@ -77,6 +80,7 @@ public class KAChat extends JavaPlugin {
         stopChatSaver();
     }
 
+    //Load when using the config
     @Override
     public void reloadConfig() {
         super.reloadConfig();
@@ -87,7 +91,7 @@ public class KAChat extends JavaPlugin {
     }
 
     private void loadListeners() {
-        getServer().getPluginManager().registerEvents(new SendMessageListener(), this);
+        getServer().getPluginManager().registerEvents(new SendMessageListener(this), this);
         getServer().getPluginManager().registerEvents(new ForceUpdateChannelListener(), this);
     }
 
@@ -145,17 +149,20 @@ public class KAChat extends JavaPlugin {
             }
         }
 
-        //Atfer reload, if players are using a deleted channel delete we remove from the list, else, we update in case that
+        //Atfer reload, if players are using a deleted channel we remove from the list, else, we update in case that
         //the channel has been updated in the config file.
         for(Map.Entry<UUID, Channel> entry : KAChatAPI.getInstance().getPlayersChannel().entrySet()) {
             Channel newChannel = KAChatAPI.getInstance().getChannelFromCommand(entry.getValue().getCommand());
             KAChatAPI.getInstance().getPlayersChannel().remove(entry.getKey());
+            Player playerFound = Bukkit.getServer().getPlayer(entry.getKey());
+
             if (newChannel == null) {
-                Player playerFound = Bukkit.getServer().getPlayer(entry.getKey());
                 if (playerFound != null) {
+                    Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(playerFound, entry.getValue(), defaultChannel, PlayerChangeChannelReason.DELETED));
                     playerFound.sendMessage("§cYour channel has been set to default because the last one has been deleted.");
                 }
             } else {
+                Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(playerFound, entry.getValue(), newChannel, PlayerChangeChannelReason.UPDATED));
                 KAChatAPI.getInstance().getPlayersChannel().put(entry.getKey(), newChannel);
             }
         }
@@ -214,6 +221,8 @@ public class KAChat extends JavaPlugin {
     }
 
     private void loadChatSaver() {
+        stopChatSaver(); //In case that it exist
+
         if (getConfig().getBoolean("security.save.enable")) {
             ChatSaver chatSaver = new ChatSaver(this, "logs/chat");
             KAChatAPI.getInstance().setChatSaver(chatSaver);
@@ -221,8 +230,6 @@ public class KAChat extends JavaPlugin {
 
             timer = new ChatSaverRunnable(this);
             timer.runTaskTimer(this, internal, internal);
-        } else {
-            stopChatSaver();
         }
     }
 

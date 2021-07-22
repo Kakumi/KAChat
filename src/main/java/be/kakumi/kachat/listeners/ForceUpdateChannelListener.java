@@ -1,6 +1,8 @@
 package be.kakumi.kachat.listeners;
 
 import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.enums.PlayerChangeChannelReason;
+import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.models.Channel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +19,7 @@ public class ForceUpdateChannelListener implements Listener {
     public void onTeleport(PlayerTeleportEvent event) {
         Channel channel = KAChatAPI.getInstance().getPlayerChannel(event.getPlayer());
         if (!channel.getWorld().equals("") && event.getTo() != null && event.getFrom().getWorld() != event.getTo().getWorld()) {
-            KAChatAPI.getInstance().setPlayerChannel(event.getPlayer(), KAChatAPI.getInstance().getDefaultChannel());
+            KAChatAPI.getInstance().setPlayerChannel(event.getPlayer(), KAChatAPI.getInstance().getDefaultChannel(), PlayerChangeChannelReason.WORLD_RESTRICTED);
             event.getPlayer().sendMessage("§cYour chat channel has been automatically set to default because you used one reserved to the world before the teleportation.");
         }
 
@@ -42,7 +44,7 @@ public class ForceUpdateChannelListener implements Listener {
             Channel channelWorld = iterator.next();
             if (channelWorld.hasPermissionToUse(player)) {
                 updated = true;
-                KAChatAPI.getInstance().setPlayerChannel(player, channelWorld);
+                KAChatAPI.getInstance().setPlayerChannel(player, channelWorld, PlayerChangeChannelReason.AUTO_WORLD);
                 player.sendMessage("§aYour channel has been updated to §f" + channelWorld.getCommand() + " §abecause you are into the world §f" + world + "§a.");
             }
         }

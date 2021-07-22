@@ -1,6 +1,7 @@
 package be.kakumi.kachat.commands;
 
 import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.enums.PlayerChangeChannelReason;
 import be.kakumi.kachat.models.Channel;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -19,13 +20,14 @@ public class ChannelCmd implements CommandExecutor {
             if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;
                 player.sendMessage("§aYou set your channel to the default one.");
-                KAChatAPI.getInstance().getPlayersChannel().remove(player.getUniqueId());
+                KAChatAPI.getInstance().removePlayerChannel(player, PlayerChangeChannelReason.COMMAND);
             } else {
                 commandSender.sendMessage("§cYou must be a player to execute that command.");
             }
         } else {
             Channel channel = KAChatAPI.getInstance().getChannelFromCommand(strings[0]);
             Player playerToChange = null;
+            PlayerChangeChannelReason reason;
             String fullCommand = StringUtils.join(strings, " ");
             boolean force = Pattern.matches(".*\\b[-f]\\b.*", fullCommand);
             boolean forcePermission = force || fullCommand.contains("-fp");
@@ -36,6 +38,7 @@ public class ChannelCmd implements CommandExecutor {
             }
 
             if (strings.length >= 2) {
+                reason = PlayerChangeChannelReason.COMMAND_OTHERS;
                 if (commandSender.hasPermission("kachat.cmd.channel.others")) {
                     playerToChange = Bukkit.getServer().getPlayer(strings[1]);
                     if (playerToChange == null) {
@@ -45,6 +48,7 @@ public class ChannelCmd implements CommandExecutor {
                     commandSender.sendMessage("§cYou don't have the permission to set the channel for a player.");
                 }
             } else {
+                reason = PlayerChangeChannelReason.COMMAND;
                 if (commandSender instanceof Player) {
                     playerToChange = (Player) commandSender;
                 } else {
@@ -74,7 +78,7 @@ public class ChannelCmd implements CommandExecutor {
                                 commandSender.sendMessage("§aYou change the channel of §f" + playerToChange.getName() + " §ato §f" + channel.getCommand() + "§a.");
                             }
                             playerToChange.sendMessage("§aYour channel is set to §f" + channel.getCommand() + "§a.");
-                            KAChatAPI.getInstance().setPlayerChannel(playerToChange, channel);
+                            KAChatAPI.getInstance().setPlayerChannel(playerToChange, channel, reason);
                         } else {
                             if (playerToChange == commandSender) {
                                 commandSender.sendMessage("§cYou can't use this channel because you are not in the world §f" + channel.getWorld() + "§c.");
