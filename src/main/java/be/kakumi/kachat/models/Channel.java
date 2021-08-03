@@ -20,6 +20,7 @@ public class Channel {
     private String format;
     private String setAutoWorld;
     private boolean delete;
+    private String overrideSymbol;
 
     public Channel(String prefix, String command, String format) {
         this.prefix = prefix;
@@ -35,6 +36,7 @@ public class Channel {
         this.forInside = false;
         this.setAutoWorld = "";
         this.delete = true;
+        this.overrideSymbol = "";
     }
 
     public Channel(String prefix, String command) {
@@ -306,4 +308,20 @@ public class Channel {
     public void setDelete(boolean delete) {
         this.delete = delete;
     }
+
+    /**
+     * Get the override symbol of this channel, it will enforce the message to be sent to this channel if it starts with this symbol.
+     * @return Symbol to override players current channel
+     */
+	public String getOverrideSymbol() {
+		return overrideSymbol;
+	}
+
+	/**
+     * Set the override symbol of this channel, it will enforce the message to be sent to this channel if it starts with this symbol.
+     * @return overrideSymbol Symbol to override players current channel
+     */	
+	public void setOverrideSymbol(String overrideSymbol) {
+		this.overrideSymbol = overrideSymbol;
+	}
 }

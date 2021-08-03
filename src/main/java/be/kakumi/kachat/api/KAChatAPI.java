@@ -7,6 +7,8 @@ import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.models.LastMessage;
 import be.kakumi.kachat.utils.Formatter;
 import be.kakumi.kachat.utils.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -120,6 +122,22 @@ public class KAChatAPI implements Placeholder {
         }
 
         this.channels = channels;
+    }
+    
+    /***
+     * Get a channel from the channel list by the content of the message sent.
+     * @param message Full text of the message
+     * @return Channel with the override symbol matching the start of the message. Null if it doesn't exist.
+     */
+    @Nullable
+    public Channel getChannelFromMessage(String message) {
+        for(Channel channel : channels) {
+        	String symbol = channel.getOverrideSymbol();
+
+            if (StringUtils.isNotEmpty(symbol) && message.startsWith(symbol)) return channel;
+        }
+
+        return null;
     }
 
     /***
