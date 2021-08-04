@@ -38,9 +38,9 @@ public class SendMessageListener implements Listener {
             boolean toSend = checkMessage(player, message);
             //Here to be sure we have the format and the message, even if KAChatAPI Formatter is not loaded
             String messageFormat = channel.getFormat().replace("{message}", message);
-            //Replace place holder for the whole message and format
+            //Replace placeholder for the whole message and format
             for(Placeholder placeholder : KAChatAPI.getInstance().getPlaceholders()) {
-                messageFormat = placeholder.format(player, messageFormat);
+                messageFormat = placeholder.format(player, channel, messageFormat);
             }
 
             List<Player> receivers = KAChatAPI.getInstance().getChatManager().getValidReceivers(channel, player);

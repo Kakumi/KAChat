@@ -364,9 +364,7 @@ public class KAChatAPI implements Placeholder {
         }
     }
 
-    public String format(@NotNull Player player, @NotNull String message) {
-        Channel channel = getPlayerChannel(player);
-
+    public String format(@NotNull Player player, @NotNull Channel channel, @NotNull String message) {
         message = message.replaceAll(" {2}", " ");
         message = message.replace("{channel}", channel.getPrefix());
         message = message.replace("{color}", chatManager.getPlayerColor(player));
