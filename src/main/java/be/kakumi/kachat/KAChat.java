@@ -12,10 +12,7 @@ import be.kakumi.kachat.exceptions.AddChannelException;
 import be.kakumi.kachat.exceptions.MessagesFileException;
 import be.kakumi.kachat.listeners.ForceUpdateChannelListener;
 import be.kakumi.kachat.listeners.SendMessageListener;
-import be.kakumi.kachat.middlewares.message.ColorFormatter;
-import be.kakumi.kachat.middlewares.message.GrammarDot;
-import be.kakumi.kachat.middlewares.message.GrammarUppercase;
-import be.kakumi.kachat.middlewares.message.MentionPlayer;
+import be.kakumi.kachat.middlewares.message.*;
 import be.kakumi.kachat.middlewares.security.*;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.timers.ChatSaverRunnable;
@@ -212,6 +209,7 @@ public class KAChat extends JavaPlugin {
     private void loadMessageFormatters() {
         KAChatAPI.getInstance().clearMessageFormatters();
 
+        KAChatAPI.getInstance().getMessageFormatters().add(new OverrideSymbolFormatter());
         //First because others formatter can add color
         KAChatAPI.getInstance().getMessageFormatters().add(new ColorFormatter());
         if (getConfig().getBoolean("grammar.capitaliseFirstLetter")) {
