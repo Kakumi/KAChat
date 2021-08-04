@@ -140,6 +140,7 @@ public class KAChat extends JavaPlugin {
                 channel.setPermissionToUse(getConfig().getString("chat.channels." + name + ".permissionToUse"));
                 channel.setPermissionToSee(getConfig().getString("chat.channels." + name + ".permissionToSee"));
                 channel.setSetAutoWorld(getConfig().getString("chat.channels." + name + ".autoWorld"));
+                channel.setOverrideSymbol(getConfig().getString("chat.channels." + name + ".overrideSymbol"));
                 channel.setDelete(true);
                 if (getConfig().isSet("chat.channels." + name + ".format")) {
                     channel.setFormat(getConfig().getString("chat.channels." + name + ".format"));
