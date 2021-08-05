@@ -28,7 +28,7 @@ public class SendMessageListener implements Listener {
 
         Player player = event.getPlayer();
         String message = event.getMessage();
-        Channel channel = getChannel(player, message);
+        Channel channel = KAChatAPI.getInstance().getPlayerChannel(player, message);
         try {
             //Format the message only
             for(Formatter formatter : KAChatAPI.getInstance().getMessageFormatters()) {
@@ -67,16 +67,6 @@ public class SendMessageListener implements Listener {
         if (KAChatAPI.getInstance().getChatSaver() != null) {
             KAChatAPI.getInstance().getChatSaver().addMessage(event.getMessageFormat(), event.isPosted());
         }
-    }
-    
-    private Channel getChannel(Player player, String message) {
-    	Channel channel = KAChatAPI.getInstance().getChannelFromMessage(message);
-        
-        if (channel != null) {
-        	return channel;
-        }
-        
-        return KAChatAPI.getInstance().getPlayerChannel(player);
     }
 
     private boolean checkMessage(Player player, String message) throws CheckerException {

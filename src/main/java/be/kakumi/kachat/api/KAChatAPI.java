@@ -213,6 +213,23 @@ public class KAChatAPI implements Placeholder {
     }
 
     /***
+     * Get the channel the player is using, default channel if player isn't using one.
+     * If the message starts with a valid override symbol, use that channel instead.
+     * @param player Player you want to get his channel
+     * @param message Message which could be overriding the player's channel
+     * @return Channel used
+     */
+    public Channel getPlayerChannel(Player player, String message) {
+        Channel channel = getChannelFromMessage(message);
+
+        if (channel != null) {
+            return channel;
+        }
+
+        return getPlayerChannel(player);
+    }
+
+    /***
      * Change the channel the player uses.
      * @param player Player you want to change his channel
      * @param channel Channel to use
