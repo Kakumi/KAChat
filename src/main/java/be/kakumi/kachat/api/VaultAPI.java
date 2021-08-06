@@ -1,6 +1,7 @@
 package be.kakumi.kachat.api;
 
 import be.kakumi.kachat.KAChat;
+import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.Placeholder;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -44,7 +45,7 @@ public class VaultAPI implements Placeholder {
         }
     }
 
-    public String format(Player player, String message) {
+    public String format(Player player, Channel channel, String message) {
         if (loaded) {
             //Economy
             message = message.replace("{vault_eco_money}", economy.getBalance(player) + "");

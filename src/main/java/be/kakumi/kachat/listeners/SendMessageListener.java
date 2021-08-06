@@ -27,8 +27,8 @@ public class SendMessageListener implements Listener {
         event.setCancelled(true);
 
         Player player = event.getPlayer();
-        Channel channel = KAChatAPI.getInstance().getPlayerChannel(player);
         String message = event.getMessage();
+        Channel channel = KAChatAPI.getInstance().getPlayerChannel(player, message);
         try {
             //Format the message only
             for(Formatter formatter : KAChatAPI.getInstance().getMessageFormatters()) {
@@ -38,9 +38,9 @@ public class SendMessageListener implements Listener {
             boolean toSend = checkMessage(player, message);
             //Here to be sure we have the format and the message, even if KAChatAPI Formatter is not loaded
             String messageFormat = channel.getFormat().replace("{message}", message);
-            //Replace place holder for the whole message and format
+            //Replace placeholder for the whole message and format
             for(Placeholder placeholder : KAChatAPI.getInstance().getPlaceholders()) {
-                messageFormat = placeholder.format(player, messageFormat);
+                messageFormat = placeholder.format(player, channel, messageFormat);
             }
 
             List<Player> receivers = KAChatAPI.getInstance().getChatManager().getValidReceivers(channel, player);

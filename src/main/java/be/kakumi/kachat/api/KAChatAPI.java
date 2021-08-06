@@ -7,6 +7,8 @@ import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.models.LastMessage;
 import be.kakumi.kachat.utils.Formatter;
 import be.kakumi.kachat.utils.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -121,6 +123,22 @@ public class KAChatAPI implements Placeholder {
 
         this.channels = channels;
     }
+    
+    /***
+     * Get a channel from the channel list by the content of the message sent.
+     * @param message Full text of the message
+     * @return Channel with the override symbol matching the start of the message. Null if it doesn't exist.
+     */
+    @Nullable
+    public Channel getChannelFromMessage(String message) {
+        for(Channel channel : channels) {
+        	String symbol = channel.getOverrideSymbol();
+
+            if (StringUtils.isNotEmpty(symbol) && message.startsWith(symbol)) return channel;
+        }
+
+        return null;
+    }
 
     /***
      * Get a channel from the channel list by a command name.
@@ -192,6 +210,23 @@ public class KAChatAPI implements Placeholder {
         if (channel == null) return defaultChannel;
 
         return channel;
+    }
+
+    /***
+     * Get the channel the player is using, default channel if player isn't using one.
+     * If the message starts with a valid override symbol, use that channel instead.
+     * @param player Player you want to get his channel
+     * @param message Message which could be overriding the player's channel
+     * @return Channel used
+     */
+    public Channel getPlayerChannel(Player player, String message) {
+        Channel channel = getChannelFromMessage(message);
+
+        if (channel != null) {
+            return channel;
+        }
+
+        return getPlayerChannel(player);
     }
 
     /***
@@ -346,9 +381,7 @@ public class KAChatAPI implements Placeholder {
         }
     }
 
-    public String format(@NotNull Player player, @NotNull String message) {
-        Channel channel = getPlayerChannel(player);
-
+    public String format(@NotNull Player player, @NotNull Channel channel, @NotNull String message) {
         message = message.replaceAll(" {2}", " ");
         message = message.replace("{channel}", channel.getPrefix());
         message = message.replace("{color}", chatManager.getPlayerColor(player));

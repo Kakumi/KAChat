@@ -12,10 +12,7 @@ import be.kakumi.kachat.exceptions.AddChannelException;
 import be.kakumi.kachat.exceptions.MessagesFileException;
 import be.kakumi.kachat.listeners.ForceUpdateChannelListener;
 import be.kakumi.kachat.listeners.SendMessageListener;
-import be.kakumi.kachat.middlewares.message.ColorFormatter;
-import be.kakumi.kachat.middlewares.message.GrammarDot;
-import be.kakumi.kachat.middlewares.message.GrammarUppercase;
-import be.kakumi.kachat.middlewares.message.MentionPlayer;
+import be.kakumi.kachat.middlewares.message.*;
 import be.kakumi.kachat.middlewares.security.*;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.timers.ChatSaverRunnable;
@@ -140,6 +137,7 @@ public class KAChat extends JavaPlugin {
                 channel.setPermissionToUse(getConfig().getString("chat.channels." + name + ".permissionToUse"));
                 channel.setPermissionToSee(getConfig().getString("chat.channels." + name + ".permissionToSee"));
                 channel.setSetAutoWorld(getConfig().getString("chat.channels." + name + ".autoWorld"));
+                channel.setOverrideSymbol(getConfig().getString("chat.channels." + name + ".overrideSymbol"));
                 channel.setDelete(true);
                 if (getConfig().isSet("chat.channels." + name + ".format")) {
                     channel.setFormat(getConfig().getString("chat.channels." + name + ".format"));
@@ -211,6 +209,7 @@ public class KAChat extends JavaPlugin {
     private void loadMessageFormatters() {
         KAChatAPI.getInstance().clearMessageFormatters();
 
+        KAChatAPI.getInstance().getMessageFormatters().add(new OverrideSymbolFormatter());
         //First because others formatter can add color
         KAChatAPI.getInstance().getMessageFormatters().add(new ColorFormatter());
         if (getConfig().getBoolean("grammar.capitaliseFirstLetter")) {
