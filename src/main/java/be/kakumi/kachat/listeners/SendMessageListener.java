@@ -42,6 +42,8 @@ public class SendMessageListener implements Listener {
             for(Placeholder placeholder : KAChatAPI.getInstance().getPlaceholders()) {
                 messageFormat = placeholder.format(player, channel, messageFormat);
             }
+            //Process all color codes from the original message and the placeholders
+            messageFormat = KAChatAPI.getInstance().processColors(messageFormat);
 
             List<Player> receivers = KAChatAPI.getInstance().getChatManager().getValidReceivers(channel, player);
 

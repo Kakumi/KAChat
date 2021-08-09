@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class KAChatAPI implements Placeholder {
     private static KAChatAPI instance;
@@ -30,6 +32,7 @@ public class KAChatAPI implements Placeholder {
     private List<Placeholder> placeholders; //Placeholders list
     private HashMap<UUID, LastMessage> lastMessages; //Last messages list
     private MessageManager messageManager; //All sentences from language file
+    private ColorProcessor colorProcessor; //Parses all kachat supported color formats into mc format
 
     private KAChatAPI() {
         this.defaultFormat = "{player}§7: §f{message}";
@@ -44,6 +47,7 @@ public class KAChatAPI implements Placeholder {
         this.placeholders.add(this);
         this.lastMessages = new HashMap<>();
         this.messageManager = null;
+        this.colorProcessor = new ColorProcessor();
     }
 
     /***
@@ -387,7 +391,6 @@ public class KAChatAPI implements Placeholder {
         message = message.replace("{color}", chatManager.getPlayerColor(player));
         message = message.replace("{chat_color}", chatManager.getChatColor(player, channel));
         message = message.replace("{player}", player.getName());
-        message = message.replace("&", "§"); //Because with ColourFormatter, message will not be updated
 
         return message.trim();
     }
@@ -407,5 +410,43 @@ public class KAChatAPI implements Placeholder {
      */
     public void setMessageManager(@NotNull MessageManager messageManager) {
         this.messageManager = messageManager;
+    }
+
+    /***
+     * Process every color code found in the message into a minecraft supported format.
+     * @param message String containing the message to be processed
+     * @return The same string with all colors matching minecraft supported color format.
+     */
+    public String processColors(String message) {
+        message = processHexColors(message); //Hex colors starting with &#
+        message = message.replace("&", "§"); //Simple colors starting with just &
+
+        return message;
+    }
+
+    /**
+     * Looks for valid hex formatted colors and transform them to minecraft supported format.
+     * <p>Supported format for hex colors are:
+     * <li> &# with 6 hex digits
+     * @param message String containing the message to be processed
+     * @return The same string with all hex colors matching minecraft supported color format.
+     */
+    private String processHexColors(String message) {
+        Map<String, String> colors = new HashMap();
+        Matcher m = Pattern.compile("&#([a-f]|[A-F]|\\d){6}")
+                .matcher(message);
+
+        while(m.find()) {
+            String msg = m.group();
+            String formatted = colorProcessor.parseHexFormat(msg);
+
+            colors.putIfAbsent(msg, formatted);
+        }
+
+        for (Map.Entry<String, String> color : colors.entrySet()) {
+            message = message.replace(color.getKey(), color.getValue());
+        }
+
+        return message;
     }
 }
