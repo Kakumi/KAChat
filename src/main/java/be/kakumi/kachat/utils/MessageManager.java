@@ -94,9 +94,9 @@ public class MessageManager {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public String get(@NotNull String path, @NotNull List<String> params) {
+    public String get(@NotNull String path, @NotNull List<String> params, boolean prefix) {
         StringBuilder message = new StringBuilder();
-        if (usePrefix) {
+        if (prefix) {
             message.append(PREFIX).append(" §r");
         }
 
@@ -115,7 +115,15 @@ public class MessageManager {
         return message.toString();
     }
 
+    public String get(@NotNull String path, @NotNull List<String> params) {
+        return get(path, params, usePrefix);
+    }
+
+    public String get(@NotNull String path, boolean prefix) {
+        return get(path, Collections.emptyList(), prefix);
+    }
+
     public String get(String path) {
-        return get(path, Collections.emptyList());
+        return get(path, Collections.emptyList(), usePrefix);
     }
 }

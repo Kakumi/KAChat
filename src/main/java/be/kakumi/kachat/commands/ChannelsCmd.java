@@ -41,7 +41,7 @@ public class ChannelsCmd implements CommandExecutor {
 
     private Inventory createInventory(int page, Player player) {
         int slotMax = 54;
-        String name = KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_TITLE);
+        String name = KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_TITLE, false);
         List<Channel> channelList = KAChatAPI.getInstance().getChannels().stream().filter(Channel::isListed).collect(Collectors.toList());
         int startIndex = (page - 1) * slotMax;
         if (page > 1) { //We remove arrows from previous page
@@ -70,11 +70,11 @@ public class ChannelsCmd implements CommandExecutor {
             Channel channel = channelList.get(i);
             List<String> lore = new ArrayList<>();
             String prefix = channel.getPrefix().replace("&", "§");
-            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_PREFIX) + (prefix.equals("") ? "/" : prefix));
-            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_RANGE) + (channel.getRange() == 0 ? KAChatAPI.getInstance().getMessageManager().get(MessageManager.UNLIMITED) : channel.getRange()));
-            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_PRIVATE) + (channel.isForInside() ? KAChatAPI.getInstance().getMessageManager().get(MessageManager.YES) : KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO)));
-            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_WORLD) + (channel.getWorld().equals("") ? "/" : channel.getWorld()));
-            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_SYMBOL) + (channel.getOverrideSymbol().equals("") ? "/" : channel.getOverrideSymbol()));
+            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_PREFIX, false) + (prefix.equals("") ? "/" : prefix));
+            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_RANGE, false) + (channel.getRange() == 0 ? KAChatAPI.getInstance().getMessageManager().get(MessageManager.UNLIMITED, false) : channel.getRange()));
+            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_PRIVATE, false) + (channel.isForInside() ? KAChatAPI.getInstance().getMessageManager().get(MessageManager.YES, false) : KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO, false)));
+            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_WORLD, false) + (channel.getWorld().equals("") ? "/" : channel.getWorld()));
+            lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_SYMBOL, false) + (channel.getOverrideSymbol().equals("") ? "/" : channel.getOverrideSymbol()));
 
             if (!(channel.getPermissionToUse().equals("") || player.hasPermission(channel.getPermissionToUse()))) {
                 lore.add("");
@@ -96,7 +96,7 @@ public class ChannelsCmd implements CommandExecutor {
             ItemStack item = new ItemStack(Material.ARROW, 1);
             ItemMeta meta = item.getItemMeta();
             assert meta != null;
-            meta.setDisplayName(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_PREVIOUS_PAGE));
+            meta.setDisplayName(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_PREVIOUS_PAGE, false));
             item.setItemMeta(meta);
 
             inventory.setItem(45, item);
@@ -106,7 +106,7 @@ public class ChannelsCmd implements CommandExecutor {
             ItemStack item = new ItemStack(Material.ARROW, 1);
             ItemMeta meta = item.getItemMeta();
             assert meta != null;
-            meta.setDisplayName(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_NEXT_PAGE));
+            meta.setDisplayName(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_NEXT_PAGE, false));
             item.setItemMeta(meta);
 
             inventory.setItem(53, item);

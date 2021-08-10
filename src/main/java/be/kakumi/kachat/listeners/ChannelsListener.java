@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class ChannelsListener implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
-        if (event.getView().getTitle().startsWith(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_TITLE))) {
+        if (event.getView().getTitle().startsWith(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_TITLE, false))) {
             event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
             int slot = event.getSlot();
