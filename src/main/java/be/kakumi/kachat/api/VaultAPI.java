@@ -11,7 +11,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class VaultAPI implements Placeholder {
     private final KAChat main;
-    private boolean loaded;
+    private boolean economyLoaded;
+    private boolean permissionLoaded;
+    private boolean chatLoaded;
     private Economy economy;
     private Permission permission;
     private Chat chat;
@@ -25,35 +27,51 @@ public class VaultAPI implements Placeholder {
 
     private void setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = main.getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp != null) {
-            loaded = true;
+        economyLoaded = rsp != null;
+
+        if (economyLoaded) {
             economy = rsp.getProvider();
         }
     }
 
     private void setupChat() {
         RegisteredServiceProvider<Chat> rsp = main.getServer().getServicesManager().getRegistration(Chat.class);
-        if (rsp != null) {
+        chatLoaded = rsp != null;
+
+        if (chatLoaded) {
             chat = rsp.getProvider();
         }
     }
 
     private void setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = main.getServer().getServicesManager().getRegistration(Permission.class);
-        if (rsp != null) {
+        permissionLoaded = rsp != null;
+
+        if (permissionLoaded) {
             permission = rsp.getProvider();
         }
     }
 
     public String format(Player player, Channel channel, String message) {
-        if (loaded) {
-            //Economy
+        //Economy
+        if (economyLoaded) {
+            message = message.replace("{vault_eco_name}", economy.getName());
             message = message.replace("{vault_eco_money}", economy.getBalance(player) + "");
             message = message.replace("{vault_eco_money.2f}", String.format("%.1f", economy.getBalance(player)));
-            //Chat
+            message = message.replace("{vault_eco_currency_name}", economy.currencyNameSingular());
+            message = message.replace("{vault_eco_currency_name_plural}", economy.currencyNamePlural());
+        }
+
+        //Chat
+        if (chatLoaded) {
             message = message.replace("{vault_chat_name}", chat.getName());
             message = message.replace("{vault_chat_player_prefix}", chat.getPlayerPrefix(player));
-            //Permission
+            message = message.replace("{vault_chat_player_suffix}", chat.getPlayerSuffix(player));
+            message = message.replace("{vault_chat_player_primary_group}", chat.getPrimaryGroup(player));
+        }
+
+        //Permission
+        if (permissionLoaded) {
             message = message.replace("{vault_perm_group}", permission.getPrimaryGroup(player));
         }
 

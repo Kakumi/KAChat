@@ -24,7 +24,7 @@ notification:
 grammar: 
   capitaliseFirstLetter: true #Capitalize first letter of the message
   forceDotAtTheEnd: true #Put a dot at the end of the message
-chat: 
+chat:
   format: "{channel} {color}{player}§7: {chat_color}{message}" #Default format
   defaultChannel: "global" #ID of a channel from chat.channels
   channels:
