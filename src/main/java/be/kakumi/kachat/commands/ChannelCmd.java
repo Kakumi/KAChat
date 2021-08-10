@@ -12,7 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 public class ChannelCmd implements CommandExecutor {
@@ -43,7 +44,7 @@ public class ChannelCmd implements CommandExecutor {
                 if (commandSender.hasPermission("kachat.cmd.channel.others")) {
                     playerToChange = Bukkit.getServer().getPlayer(strings[1]);
                     if (playerToChange == null) {
-                        commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NOT_CONNECTED, strings[1], null));
+                        commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NOT_CONNECTED, Collections.singletonList(strings[1])));
                     }
                 } else {
                     commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_SET));
@@ -74,22 +75,22 @@ public class ChannelCmd implements CommandExecutor {
                     if (forcePermission || channel.hasPermissionToUse(playerToChange)) {
                         if (forceWorld || channel.getWorld().equals("") || playerToChange.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
                             if (playerToChange != commandSender) {
-                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_PLAYER, playerToChange.getName(), channel.getCommand()));
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_PLAYER, Arrays.asList(playerToChange.getName(), channel.getCommand())));
                             }
-                            playerToChange.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, channel.getCommand(), null));
+                            playerToChange.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, Collections.singletonList(channel.getCommand())));
                             KAChatAPI.getInstance().setPlayerChannel(playerToChange, channel, reason);
                         } else {
                             if (playerToChange == commandSender) {
-                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, channel.getWorld(), null));
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, Collections.singletonList(channel.getWorld())));
                             } else {
-                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_PLAYER, playerToChange.getName(), channel.getWorld()));
+                                commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_PLAYER, Arrays.asList(playerToChange.getName(), channel.getWorld())));
                             }
                         }
                     } else {
                         if (playerToChange == commandSender) {
                             commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_MYSELF));
                         } else {
-                            commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_PLAYER, playerToChange.getName(), null));
+                            commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_PLAYER, Collections.singletonList(playerToChange.getName())));
                         }
                     }
                 }

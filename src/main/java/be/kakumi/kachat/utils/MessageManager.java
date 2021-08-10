@@ -4,10 +4,11 @@ import be.kakumi.kachat.KAChat;
 import be.kakumi.kachat.exceptions.MessagesFileException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class MessageManager {
     public static final String PREFIX = "§9[§bKAChat§9]";
@@ -93,7 +94,7 @@ public class MessageManager {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public String get(@NotNull String path, @Nullable String p1, @Nullable String p2) {
+    public String get(@NotNull String path, @NotNull List<String> params) {
         StringBuilder message = new StringBuilder();
         if (usePrefix) {
             message.append(PREFIX).append(" §r");
@@ -101,11 +102,8 @@ public class MessageManager {
 
         if (messages.isSet(path)) {
             String messageFile = messages.getString(path).replace("&", "§");
-            if (p1 != null) {
-                messageFile = messageFile.replace("$1", p1);
-            }
-            if (p2 != null) {
-                messageFile = messageFile.replace("$2", p2);
+            for(int i = 0; i < params.size(); i++) {
+                messageFile = messageFile.replace("$" + (i + 1), params.get(i));
             }
             message.append(messageFile);
 
@@ -118,6 +116,6 @@ public class MessageManager {
     }
 
     public String get(String path) {
-        return get(path, null, null);
+        return get(path, Collections.emptyList());
     }
 }

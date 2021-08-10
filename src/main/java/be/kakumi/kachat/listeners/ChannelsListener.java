@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,10 +39,10 @@ public class ChannelsListener implements Listener {
                         if (channel != null) {
                             if (channel.hasPermissionToUse(player)) {
                                 if (channel.getWorld().equals("") || player.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
-                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, channel.getCommand(), null));
+                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, Collections.singletonList(channel.getCommand())));
                                     KAChatAPI.getInstance().setPlayerChannel(player, channel, PlayerChangeChannelReason.COMMAND);
                                 } else {
-                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, channel.getWorld(), null));
+                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, Collections.singletonList(channel.getWorld())));
                                 }
                             } else {
                                 player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_MYSELF));
