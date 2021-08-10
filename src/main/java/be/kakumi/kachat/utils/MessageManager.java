@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MessageManager {
     public static final String PREFIX = "§9[§bKAChat§9]";
@@ -18,8 +19,8 @@ public class MessageManager {
     public static final String CLEAR_CHAT_ALL = "clear_chat_all";
     public static final String ERROR_OCCURRED = "error_occurred";
     public static final String INVALID_NUMBER_ARG = "invalid_number_arg";
-    public static final String YES = "yes";
-    public static final String NO = "no";
+    public static final String YES = "yes_text";
+    public static final String NO = "no_text";
     public static final String UNLIMITED = "unlimited";
     public static final String CHANNEL_SET_DEFAULT = "channel.set_default";
     public static final String CHANNEL_SET_DEFAULT_DELETED = "channel.set_default_deleted";
@@ -51,6 +52,7 @@ public class MessageManager {
     public static final String INVENTORY_CHANNELS_LORE_SYMBOL = "inventory.channels.lore_symbol";
 
     private final YamlConfiguration messages;
+    private final YamlConfiguration template;
     private final boolean usePrefix;
 
     public MessageManager(KAChat main) throws MessagesFileException {
@@ -64,6 +66,27 @@ public class MessageManager {
         File file = new File(main.getDataFolder() + "/messages/" + codeFile + ".yml");
         if (file.exists()) {
             messages = YamlConfiguration.loadConfiguration(file);
+        } else {
+            throw new MessagesFileException();
+        }
+
+        //Load template file
+        File fileTemplate = new File(main.getDataFolder() + "/messages/template.yml");
+        if (fileTemplate.exists()) {
+            template = YamlConfiguration.loadConfiguration(fileTemplate);
+
+            //Generate missing values
+            for(String node : template.getConfigurationSection("").getKeys(true)) {
+                if (!messages.isSet(node)) {
+                    messages.set(node, template.get(node));
+                }
+            }
+
+            try {
+                messages.save(file);
+            } catch (IOException e) {
+                throw new MessagesFileException();
+            }
         } else {
             throw new MessagesFileException();
         }
