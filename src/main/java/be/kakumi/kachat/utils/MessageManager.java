@@ -16,6 +16,11 @@ public class MessageManager {
     public static final String RELOAD_CONFIG = "reload_config";
     public static final String CLEAR_CHAT = "clear_chat";
     public static final String CLEAR_CHAT_ALL = "clear_chat_all";
+    public static final String ERROR_OCCURRED = "error_occurred";
+    public static final String INVALID_NUMBER_ARG = "invalid_number_arg";
+    public static final String YES = "yes";
+    public static final String NO = "no";
+    public static final String UNLIMITED = "unlimited";
     public static final String CHANNEL_SET_DEFAULT = "channel.set_default";
     public static final String CHANNEL_SET_DEFAULT_DELETED = "channel.set_default_deleted";
     public static final String CHANNEL_NOT_CONNECTED = "channel.not_connected";
@@ -36,6 +41,14 @@ public class MessageManager {
     public static final String SECURITY_COOLDOWN = "security.cooldown";
     public static final String SECURITY_STRANGE = "security.strange";
     public static final String SECURITY_SPAM = "security.spam";
+    public static final String INVENTORY_PREVIOUS_PAGE = "inventory.previous_page";
+    public static final String INVENTORY_NEXT_PAGE = "inventory.next_page";
+    public static final String INVENTORY_CHANNELS_TITLE = "inventory.channels.title";
+    public static final String INVENTORY_CHANNELS_LORE_PREFIX = "inventory.channels.lore_prefix";
+    public static final String INVENTORY_CHANNELS_LORE_RANGE = "inventory.channels.lore_range";
+    public static final String INVENTORY_CHANNELS_LORE_PRIVATE = "inventory.channels.lore_private";
+    public static final String INVENTORY_CHANNELS_LORE_WORLD = "inventory.channels.lore_world";
+    public static final String INVENTORY_CHANNELS_LORE_SYMBOL = "inventory.channels.lore_symbol";
 
     private final YamlConfiguration messages;
     private final boolean usePrefix;
@@ -47,6 +60,7 @@ public class MessageManager {
         main.saveResource("messages/fr.yml", false);
         main.saveResource("messages/template.yml", true);
         String codeFile = main.getConfig().getString("lang");
+        //Load user language file
         File file = new File(main.getDataFolder() + "/messages/" + codeFile + ".yml");
         if (file.exists()) {
             messages = YamlConfiguration.loadConfiguration(file);
