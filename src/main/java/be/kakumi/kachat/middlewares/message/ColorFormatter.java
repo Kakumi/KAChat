@@ -5,9 +5,7 @@ import org.bukkit.entity.Player;
 
 public class ColorFormatter implements Formatter {
     public String format(Player player, String message) {
-        if (player.hasPermission("kachat.bypass.color")) {
-            message = message.replace("&", "§");
-        } else {
+        if (!player.hasPermission("kachat.bypass.color")) {
             message = message.replaceAll("§.", "");
             message = message.replaceAll("&.", "");
         }
