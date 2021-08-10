@@ -14,6 +14,11 @@ commands:
     description: Change your channel or use the one by default.
     permission: kachat.cmd.channel
     permission-message: "§cYou don't have the permission !"
+  channels:
+    usage: "§cCommand: §f/channels§c."
+    description: List all channels available.
+    permission: kachat.cmd.channels
+    permission-message: "§cYou don't have the permission !"
   clearchat:
     usage: "§cCommand: §f/clearchat [-a (for everyone)]§c."
     description: Clear the chat
@@ -49,6 +54,8 @@ permissions:
     description: Change the channel of a player
   kachat.cmd.channel.force:
     description: Allow the player to force use channel even if he doesn't have the permission
+  kachat.cmd.channels:
+    description: Allow player to change channel through /channels
   kachat.cmd.reload:
     description: Allow player to reload config file and load changes
   kachat.cmd.clearchat:

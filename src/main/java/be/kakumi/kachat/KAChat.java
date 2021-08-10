@@ -4,12 +4,14 @@ import be.kakumi.kachat.api.KAChatAPI;
 import be.kakumi.kachat.api.PlaceholderAPI;
 import be.kakumi.kachat.api.VaultAPI;
 import be.kakumi.kachat.commands.ChannelCmd;
+import be.kakumi.kachat.commands.ChannelsCmd;
 import be.kakumi.kachat.commands.ClearChatCmd;
 import be.kakumi.kachat.commands.ReloadConfigCmd;
 import be.kakumi.kachat.enums.PlayerChangeChannelReason;
 import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.exceptions.AddChannelException;
 import be.kakumi.kachat.exceptions.MessagesFileException;
+import be.kakumi.kachat.listeners.ChannelsListener;
 import be.kakumi.kachat.listeners.ForceUpdateChannelListener;
 import be.kakumi.kachat.listeners.SendMessageListener;
 import be.kakumi.kachat.middlewares.message.*;
@@ -101,12 +103,15 @@ public class KAChat extends JavaPlugin {
     private void loadListeners() {
         getServer().getPluginManager().registerEvents(new SendMessageListener(this), this);
         getServer().getPluginManager().registerEvents(new ForceUpdateChannelListener(), this);
+        getServer().getPluginManager().registerEvents(new ChannelsListener(), this);
     }
 
     @SuppressWarnings("ConstantConditions")
     private void loadCommands() {
         getCommand("channel").setExecutor(new ChannelCmd());
         getCommand("channel").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
+        getCommand("channels").setExecutor(new ChannelsCmd());
+        getCommand("channels").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
         getCommand("kareload").setExecutor(new ReloadConfigCmd(this));
         getCommand("kareload").setPermissionMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
         getCommand("clearchat").setExecutor(new ClearChatCmd());
@@ -137,8 +142,12 @@ public class KAChat extends JavaPlugin {
                 channel.setPermissionToUse(getConfig().getString("chat.channels." + name + ".permissionToUse"));
                 channel.setPermissionToSee(getConfig().getString("chat.channels." + name + ".permissionToSee"));
                 channel.setSetAutoWorld(getConfig().getString("chat.channels." + name + ".autoWorld"));
-                channel.setOverrideSymbol(getConfig().getString("chat.channels." + name + ".overrideSymbol"));
                 channel.setDelete(true);
+                if (getConfig().isSet("chat.channels." + name + ".overrideSymbol")) {
+                    channel.setOverrideSymbol(getConfig().getString("chat.channels." + name + ".overrideSymbol"));
+                } else {
+                    channel.setOverrideSymbol("");
+                }
                 if (getConfig().isSet("chat.channels." + name + ".format")) {
                     channel.setFormat(getConfig().getString("chat.channels." + name + ".format"));
                 } else {

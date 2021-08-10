@@ -58,6 +58,7 @@ Placeholders are used to replace some text in the message by some plugins values
 ## API
 ### How to use the API
 First you need to install the dependency through .jar file, Maven or Gradle.
+<br>**Replace \<release version> with the desired version**
 <br>Maven :
 ```xml
 <project>
@@ -72,7 +73,7 @@ First you need to install the dependency through .jar file, Maven or Gradle.
         <dependency>
             <groupId>com.github.Kakumi</groupId>
             <artifactId>KAChat</artifactId>
-            <version>1.0</version>
+            <version><release version></version>
         </dependency>
     </dependencies>
 </project>
@@ -86,7 +87,7 @@ First you need to install the dependency through .jar file, Maven or Gradle.
     }
 
     dependencies {
-        implementation 'com.github.Kakumi:KAChat:1.0'
+        implementation 'com.github.Kakumi:KAChat:<release version>'
     }
 ```
 
@@ -134,6 +135,7 @@ public class MyPlugin extends JavaPlugin {
         channel.setPermissionToSee("");
         channel.setSetAutoWorld("");
         channel.setDelete(false);
+        channel.setOverrideSymbol("^");
         channel.setFormat(KAChatAPI.getInstance().getDefaultFormat());
 
         //Not necessary, you can store channel in your list and retrieve it by adding behaviour to ChatManager.
@@ -192,7 +194,7 @@ public class MyPlugin extends JavaPlugin {
 #### Placeholder
 ```java
 public class MyPlaceholder implements Placeholder {
-    public String format(Player player, String message) {
+    public String format(Player player, Channel channel, String message) {
         return message.replace("{placeholder}", player.getName());
     }
 }

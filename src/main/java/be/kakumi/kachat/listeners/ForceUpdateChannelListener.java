@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class ForceUpdateChannelListener implements Listener {
             if (channelWorld.hasPermissionToUse(player)) {
                 updated = true;
                 KAChatAPI.getInstance().setPlayerChannel(player, channelWorld, PlayerChangeChannelReason.AUTO_WORLD);
-                player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_AUTO_WORLD, channelWorld.getCommand(), world));
+                player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_AUTO_WORLD, Arrays.asList(channelWorld.getCommand(), world)));
             }
         }
     }

@@ -3,6 +3,7 @@ package be.kakumi.kachat.models;
 import be.kakumi.kachat.api.KAChatAPI;
 import be.kakumi.kachat.exceptions.UpdateChannelCommandException;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("rawtypes")
 public class Channel {
@@ -39,7 +40,7 @@ public class Channel {
         this.overrideSymbol = "";
     }
 
-    public Channel(String prefix, String command) {
+    public Channel(@NotNull String prefix, @NotNull String command) {
         this(prefix, command, "");
     }
 
@@ -55,7 +56,7 @@ public class Channel {
      * Set the command, can be used as an identifier and also for the /channel command.
      * @param command Command for the channel
      */
-    public void setCommand(String command) throws UpdateChannelCommandException {
+    public void setCommand(@NotNull String command) throws UpdateChannelCommandException {
         if (KAChatAPI.getInstance().getChannelFromCommand(command) == null) {
             throw new UpdateChannelCommandException();
         }
@@ -75,7 +76,7 @@ public class Channel {
      * Set the prefix to use in the chat for this channel.
      * @param prefix Prefix for the channel
      */
-    public void setPrefix(String prefix) {
+    public void setPrefix(@NotNull String prefix) {
         this.prefix = prefix;
     }
 
@@ -91,7 +92,7 @@ public class Channel {
      * Set the color to use in the chat for this channel.
      * @param color Color for the channel
      */
-    public void setColor(String color) {
+    public void setColor(@NotNull String color) {
         this.color = color;
     }
 
@@ -179,7 +180,7 @@ public class Channel {
      * different than this one.
      * @param world Name of the world
      */
-    public void setWorld(String world) {
+    public void setWorld(@NotNull String world) {
         this.world = world;
     }
 
@@ -195,7 +196,7 @@ public class Channel {
      * Set the permission to use to send messages into this channel.
      * @param permissionToUse Permission to use
      */
-    public void setPermissionToUse(String permissionToUse) {
+    public void setPermissionToUse(@NotNull String permissionToUse) {
         this.permissionToUse = permissionToUse;
     }
 
@@ -221,7 +222,7 @@ public class Channel {
      * set the permission to see messages from this channel.
      * @param permissionToSee Permission to see
      */
-    public void setPermissionToSee(String permissionToSee) {
+    public void setPermissionToSee(@NotNull String permissionToSee) {
         this.permissionToSee = permissionToSee;
     }
 
@@ -265,7 +266,7 @@ public class Channel {
      * Set the format to use in the chat for this channel.
      * @param format Format for the channel. eg: "{player}: {message}"
      */
-    public void setFormat(String format) {
+    public void setFormat(@NotNull String format) {
         this.format = format;
     }
 
@@ -281,7 +282,7 @@ public class Channel {
      * Set the world name of this channel, it will force player to use this channel when they enter into this world.
      * @param setAutoWorld Name of a world
      */
-    public void setSetAutoWorld(String setAutoWorld) {
+    public void setSetAutoWorld(@NotNull String setAutoWorld) {
         this.setAutoWorld = setAutoWorld;
     }
 
@@ -321,7 +322,7 @@ public class Channel {
      * Set the override symbol of this channel, it will enforce the message to be sent to this channel if it starts with this symbol.
      * @return overrideSymbol Symbol to override players current channel
      */	
-	public void setOverrideSymbol(String overrideSymbol) {
-		this.overrideSymbol = overrideSymbol;
+	public void setOverrideSymbol(@NotNull String overrideSymbol) {
+        this.overrideSymbol = overrideSymbol;
 	}
 }
