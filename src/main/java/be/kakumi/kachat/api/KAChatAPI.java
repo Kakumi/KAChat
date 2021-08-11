@@ -40,7 +40,7 @@ public class KAChatAPI implements Placeholder {
         this.channels = new ArrayList<>();
         this.playersChannel = new HashMap<>();
         this.chatSaver = null;
-        this.chatManager = new SimpleChatManager();
+        this.chatManager = new ChatManager();
         this.checkers = new ArrayList<>();
         this.messageFormatters = new ArrayList<>();
         this.placeholders = new ArrayList<>();
