@@ -6,6 +6,7 @@ This plugin is a chat manager for minecraft. Avaible from spigot 1.7.10 to 1.16.
 ## Commands
 - **/kareload**: Reload the config file
 - **/channel [channel] [player] [-fp (force permission)] [-fw (force world)] [-f (force all)]**: Change the channel of someone, or you by default
+- **/channels**: Open a GUI with all listable channels
 - **/clearchat [-a (everyone)]**: Clear the chat
 
 ## Permissions
@@ -20,6 +21,7 @@ This plugin is a chat manager for minecraft. Avaible from spigot 1.7.10 to 1.16.
 - **kachat.cmd.channel**: Allow player to change channel through /channel
 - **kachat.cmd.channel.others**: Change the channel of a player
 - **kachat.cmd.channel.force**: Allow the player to force use channel even if he doesn't have the permission
+- **kachat.cmd.channels**: Allow player to change channel through /channels
 - **kachat.cmd.reload**: Allow player to reload config file and load changes
 - **kachat.cmd.clearchat**: Allow player to clear the chat
 - **kachat.cmd.clearchat.all**: Allow player to clear for everyone
@@ -47,14 +49,24 @@ Placeholders are used to replace some text in the message by some plugins values
 1. **KAChatAPI**:
     * {message}: The message sent by the player (real message)
     * {channel}: The player's channel prefix
-    * {color}: The player's color (white)
+    * {color}: The player's color (white or red if OP)
     * {chat_color}: The player's channel color
     * {player}: The player's name
     * _More will be added soon._
 2. **PlaceholderAPI**:
     * [List of placeholders](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders)
     * Be sure to download the extension you need by doing the command : /papi ecloud download <Extension>
-    
+3. **Vault**:
+    * {vault_eco_name}: Name of the economy plugin
+    * {vault_eco_money}: Balance of the player
+    * {vault_eco_money.2f}: Balance of the player with 2 decimals
+    * {vault_eco_currency_name}: Name of money
+    * {vault_eco_currency_name_plural}: Name of money in plural
+    * {vault_chat_name}: Name of the chat plugin
+    * {vault_chat_player_prefix}: Player's primary group prefix
+    * {vault_chat_player_suffix}: Player's primary group suffix
+    * {vault_chat_player_primary_group}: Player's primary group
+    * {vault_perm_group}: Name of the permission plugin
 ## API
 ### How to use the API
 First you need to install the dependency through .jar file, Maven or Gradle.
