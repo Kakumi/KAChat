@@ -2,7 +2,7 @@ name: KAChat
 version: 1.0
 main: be.kakumi.kachat.KAChat
 author: Kakumi
-softdepend: [PlaceholderAPI, Vault]
+softdepend: [PlaceholderAPI, Vault, ProtocolLib]
 commands:
   kareload:
     usage: "§cCommand: §f/kareload§c."

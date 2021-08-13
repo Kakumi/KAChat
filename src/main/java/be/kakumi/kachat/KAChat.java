@@ -20,6 +20,7 @@ import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.timers.ChatSaverRunnable;
 import be.kakumi.kachat.utils.ChatSaver;
 import be.kakumi.kachat.utils.MessageManager;
+import be.kakumi.kachat.utils.ProtocolLibChatManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,6 +51,9 @@ public class KAChat extends JavaPlugin {
         }
         if (loadPlugin("Vault", false)) {
             KAChatAPI.getInstance().getPlaceholders().add(new VaultAPI(this));
+        }
+        if (loadPlugin("ProtocolLib", false)) {
+            KAChatAPI.getInstance().setChatManager(new ProtocolLibChatManager());
         }
     }
 

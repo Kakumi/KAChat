@@ -28,7 +28,7 @@ public class ChatManager {
      * @param player Player who sent the message
      * @return List of available players
      */
-    public List<Player> getValidReceivers(Channel channel, Player player) {
+    public final List<Player> getValidReceivers(Channel channel, Player player) {
         List<Player> players = getNearbyPlayers(channel, player);
 
         return filterReceivers(players, channel);
@@ -42,7 +42,7 @@ public class ChatManager {
      * @param player Player wo sent the message
      * @return List of player that meets the restrictions
      */
-    public List<Player> getNearbyPlayers(Channel channel, Player player) {
+    protected List<Player> getNearbyPlayers(Channel channel, Player player) {
         List<Player> nearbyPlayers = new ArrayList<>();
         if (channel.getRange() == 0) {
             if (!channel.getWorld().equals("")) {
