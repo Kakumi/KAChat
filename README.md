@@ -25,6 +25,9 @@ This plugin is a chat manager for minecraft. Avaible from spigot 1.7.10 to 1.16.
 - **kachat.cmd.reload**: Allow player to reload config file and load changes
 - **kachat.cmd.clearchat**: Allow player to clear the chat
 - **kachat.cmd.clearchat.all**: Allow player to clear for everyone
+- **kachat.playercolor.&a**: Allow player to use this color before his name
+- **kachat.chatcolor.channel.&a**: Allow player to use this color in chat in channel "channel"
+- **kachat.chatcolor.&a**: Allow player to use this color in chat
 
 ## Middleware
 ### Checkers
@@ -52,6 +55,8 @@ Placeholders are used to replace some text in the message by some plugins values
     * {color}: The player's color (white or red if OP)
     * {chat_color}: The player's channel color
     * {player}: The player's name
+    * {display_name}: The player's display name
+    * {custom_name}: The player's display name without color codes
     * _More will be added soon._
 2. **PlaceholderAPI**:
     * [List of placeholders](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders)

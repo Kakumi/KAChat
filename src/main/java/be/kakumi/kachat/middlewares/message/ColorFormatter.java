@@ -8,6 +8,7 @@ public class ColorFormatter implements Formatter {
         if (!player.hasPermission("kachat.bypass.color")) {
             message = message.replaceAll("§.", "");
             message = message.replaceAll("&.", "");
+            message = message.replaceAll("&#[a-fA-F\\d]{6}", "");
         }
 
         return message;

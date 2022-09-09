@@ -24,6 +24,11 @@ notification:
 grammar: 
   capitaliseFirstLetter: true #Capitalize first letter of the message
   forceDotAtTheEnd: true #Put a dot at the end of the message
+playerHover: #hover event on player's name | #using this disables hex color
+  command: "msg {custom_name} "
+  text: []
+    # - "&ePlayer: &7&o{display_name}"
+    # - "&eMoney: &7&o{vault_eco_money.2f}"
 chat:
   format: "{channel} {color}{player}§7: {chat_color}{message}" #Default format
   defaultChannel: "global" #ID of a channel from chat.channels
@@ -42,6 +47,8 @@ chat:
       permissionToSee: "" #Permission to see message from this channel
       overrideSymbol: "" #If the message starts with this symbol, it will be sent to this channel regardless of which channel the player has joined
       cooldown: 0 #Cooldown between each message for this channel
+      custom:
+        useAnonyme: true
     proximity:
       enable: true
       listed: true
@@ -56,6 +63,8 @@ chat:
       permissionToUse: ""
       permissionToSee: ""
       format: "&6{player}&7: {chat_color}{message}"
+      custom:
+        useAnonyme: true
     staff:
       enable: true
       listed: true
@@ -70,3 +79,5 @@ chat:
       permissionToUse: "kachat.channel.staff"
       permissionToSee: "kachat.channel.staff"
       overrideSymbol: "$"
+      custom:
+        useAnonyme: true

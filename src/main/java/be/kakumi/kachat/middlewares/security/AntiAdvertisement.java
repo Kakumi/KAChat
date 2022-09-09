@@ -2,13 +2,14 @@ package be.kakumi.kachat.middlewares.security;
 
 import be.kakumi.kachat.exceptions.CheckerException;
 import be.kakumi.kachat.exceptions.SecurityAdsException;
+import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.Checker;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
 
 public class AntiAdvertisement implements Checker {
-    public boolean valid(Player player, String message) throws CheckerException {
+    public boolean valid(Player player, Channel channel, String message) throws CheckerException {
         if (player.hasPermission("kachat.bypass.ads")) return true;
 
         String url = "(https?://)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)";

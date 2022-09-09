@@ -5,6 +5,8 @@ import be.kakumi.kachat.exceptions.UpdateChannelCommandException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 @SuppressWarnings("rawtypes")
 public class Channel {
     private String command;
@@ -22,6 +24,7 @@ public class Channel {
     private String setAutoWorld;
     private boolean delete;
     private String overrideSymbol;
+    private HashMap<String, Object> custom;
 
     public Channel(String prefix, String command, String format) {
         this.prefix = prefix;
@@ -38,6 +41,7 @@ public class Channel {
         this.setAutoWorld = "";
         this.delete = true;
         this.overrideSymbol = "";
+        this.custom = new HashMap<>();
     }
 
     public Channel(@NotNull String prefix, @NotNull String command) {
@@ -325,4 +329,20 @@ public class Channel {
 	public void setOverrideSymbol(@NotNull String overrideSymbol) {
         this.overrideSymbol = overrideSymbol;
 	}
+
+    /**
+     * Get custom data for this channel using HashMap as key;value
+     * @return
+     */
+    public HashMap<String, Object> getCustom() {
+        return custom;
+    }
+
+    /**
+     * Set custom data for this channel using HashMap as key;value
+     * @param custom
+     */
+    public void setCustom(HashMap<String, Object> custom) {
+        this.custom = custom;
+    }
 }

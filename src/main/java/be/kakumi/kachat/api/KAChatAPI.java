@@ -5,11 +5,12 @@ import be.kakumi.kachat.events.PlayerUpdateChannelEvent;
 import be.kakumi.kachat.exceptions.AddChannelException;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.models.LastMessage;
+import be.kakumi.kachat.models.PlayerTextHover;
 import be.kakumi.kachat.utils.Formatter;
 import be.kakumi.kachat.utils.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class KAChatAPI implements Placeholder {
     private List<Checker> checkers; //Checkers list
     private List<Formatter> messageFormatters; //Message formatters list
     private List<Placeholder> placeholders; //Placeholders list
+    private PlayerTextHover playerTextHover; //Player text hover
     private HashMap<UUID, LastMessage> lastMessages; //Last messages list
     private MessageManager messageManager; //All sentences from language file
     private ColorProcessor colorProcessor; //Parses all kachat supported color formats into mc format
@@ -249,10 +251,10 @@ public class KAChatAPI implements Placeholder {
      * @param reason Reason of the change
      */
     public void setPlayerChannel(Player player, Channel channel, PlayerChangeChannelReason reason) {
-        Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(player, playersChannel.get(player.getUniqueId()), channel, reason));
-
+        Channel fromChannel = playersChannel.get(player.getUniqueId());
         playersChannel.remove(player.getUniqueId());
         playersChannel.put(player.getUniqueId(), channel);
+        Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(player, fromChannel, channel, reason));
     }
 
     /***
@@ -261,8 +263,9 @@ public class KAChatAPI implements Placeholder {
      * @param reason Reason of the change
      */
     public void removePlayerChannel(Player player, PlayerChangeChannelReason reason) {
-        Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(player, playersChannel.get(player.getUniqueId()), defaultChannel, reason));
+        Channel fromChannel = playersChannel.get(player.getUniqueId());
         playersChannel.remove(player.getUniqueId());
+        Bukkit.getPluginManager().callEvent(new PlayerUpdateChannelEvent(player, fromChannel, defaultChannel, reason));
     }
 
     /***
@@ -358,10 +361,47 @@ public class KAChatAPI implements Placeholder {
 
     /***
      * Get list of registered placeholders.
+     * PlaceholderAPI is always last
      * @return Placeholder list
      */
     public List<Placeholder> getPlaceholders() {
+        PlaceholderAPI placeholderAPI = searchPlaceholderAPI();
+        if (placeholderAPI != null) {
+            placeholders.remove(placeholderAPI);
+            placeholders.add(placeholderAPI);
+        }
+
         return placeholders;
+    }
+
+    /***
+     * Search for PlaceholderAPI
+     * @return PlaceholderAPI class
+     */
+    private PlaceholderAPI searchPlaceholderAPI() {
+        for (Placeholder placeholder : placeholders) {
+            if (placeholder instanceof PlaceholderAPI) {
+                return (PlaceholderAPI) placeholder;
+            }
+        }
+
+        return null;
+    }
+
+    /***
+     * Get the player text hover template
+     * @return PlayerTextHover
+     */
+    public PlayerTextHover getPlayerTextHover() {
+        return playerTextHover;
+    }
+
+    /***
+     * Set the player text hover template
+     * @param playerTextHover PlayerTextHover
+     */
+    public void setPlayerTextHover(PlayerTextHover playerTextHover) {
+        this.playerTextHover = playerTextHover;
     }
 
     /***
@@ -386,13 +426,14 @@ public class KAChatAPI implements Placeholder {
     }
 
     public String format(@NotNull Player player, @NotNull Channel channel, @NotNull String message) {
-        message = message.replaceAll(" {2}", " ");
         message = message.replace("{channel}", channel.getPrefix());
         message = message.replace("{color}", chatManager.getPlayerColor(player));
         message = message.replace("{chat_color}", chatManager.getChatColor(player, channel));
         message = message.replace("{player}", player.getName());
+        message = message.replace("{display_name}", player.getDisplayName());
+        message = message.replace("{custom_name}", ChatColor.stripColor(player.getDisplayName()));
 
-        return message.trim();
+        return message;
     }
 
     /***
@@ -424,6 +465,17 @@ public class KAChatAPI implements Placeholder {
         return message;
     }
 
+    /***
+     * Process beautifier in the chat message, e.g. remove double (or more) successive space and trim the message
+     * @param message String containing the message to be processed
+     * @return The same string beautified
+     */
+    public String processBeautifier(String message) {
+        message = message.replaceAll(" {2,}", " ");
+
+        return message.trim();
+    }
+
     /**
      * Looks for valid hex formatted colors and transform them to minecraft supported format.
      * <p>Supported format for hex colors are:
@@ -432,19 +484,12 @@ public class KAChatAPI implements Placeholder {
      * @return The same string with all hex colors matching minecraft supported color format.
      */
     private String processHexColors(String message) {
-        Map<String, String> colors = new HashMap();
-        Matcher m = Pattern.compile("&#([a-f]|[A-F]|\\d){6}")
-                .matcher(message);
-
-        while(m.find()) {
-            String msg = m.group();
-            String formatted = colorProcessor.parseHexFormat(msg);
-
-            colors.putIfAbsent(msg, formatted);
-        }
-
-        for (Map.Entry<String, String> color : colors.entrySet()) {
-            message = message.replace(color.getKey(), color.getValue());
+        Pattern pattern = Pattern.compile("#[A-Fa-f\\d]{6}");
+        Matcher match = pattern.matcher(message);
+        while (match.find()) {
+            String color = message.substring(match.start(), match.end());
+            message = message.replace(color, net.md_5.bungee.api.ChatColor.of(color) + "");
+            match = pattern.matcher(message);
         }
 
         return message;

@@ -41,6 +41,7 @@ public class ChannelsListener implements Listener {
                                 if (channel.getWorld().equals("") || player.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
                                     player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, Collections.singletonList(channel.getCommand())));
                                     KAChatAPI.getInstance().setPlayerChannel(player, channel, PlayerChangeChannelReason.COMMAND);
+                                    player.closeInventory();
                                 } else {
                                     player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, Collections.singletonList(channel.getWorld())));
                                 }
@@ -51,7 +52,7 @@ public class ChannelsListener implements Listener {
                     }
                 }
             } else {
-                event.getWhoClicked().sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.ERROR_OCCURRED));
+                ((Player) event.getWhoClicked()).sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.ERROR_OCCURRED));
             }
         }
     }
