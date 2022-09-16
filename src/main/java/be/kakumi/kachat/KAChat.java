@@ -17,10 +17,10 @@ import be.kakumi.kachat.listeners.SendMessageListener;
 import be.kakumi.kachat.middlewares.message.*;
 import be.kakumi.kachat.middlewares.security.*;
 import be.kakumi.kachat.models.Channel;
+import be.kakumi.kachat.models.PlayerTextHover;
 import be.kakumi.kachat.timers.ChatSaverRunnable;
 import be.kakumi.kachat.utils.ChatSaver;
 import be.kakumi.kachat.utils.MessageManager;
-import be.kakumi.kachat.utils.ProtocolLibChatManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,10 +30,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public class KAChat extends JavaPlugin {
+    public static KAChat instance;
     private ChatSaverRunnable timer;
+
+    public static KAChat getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
+        instance = this;
+
         super.onEnable();
         saveDefaultConfig();
         reloadConfig();
@@ -51,9 +58,6 @@ public class KAChat extends JavaPlugin {
         }
         if (loadPlugin("Vault", false)) {
             KAChatAPI.getInstance().getPlaceholders().add(new VaultAPI(this));
-        }
-        if (loadPlugin("ProtocolLib", false)) {
-            KAChatAPI.getInstance().setChatManager(new ProtocolLibChatManager());
         }
     }
 
@@ -88,6 +92,7 @@ public class KAChat extends JavaPlugin {
             loadCheckers();
             loadMessageFormatters();
             loadChatSaver();
+            loadTextHover();
         }
     }
 
@@ -156,6 +161,11 @@ public class KAChat extends JavaPlugin {
                     channel.setFormat(getConfig().getString("chat.channels." + name + ".format"));
                 } else {
                     channel.setFormat(defaultFormat);
+                }
+                if (getConfig().contains("chat.channels." + name + ".custom")) {
+                    for(String key : getConfig().getConfigurationSection("chat.channels." + name + ".custom").getKeys(false)) {
+                        channel.getCustom().put(key, getConfig().get("chat.channels." + name + ".custom." + key));
+                    }
                 }
 
                 if (name.equalsIgnoreCase(defaultChannelCode)) {
@@ -254,6 +264,16 @@ public class KAChat extends JavaPlugin {
             timer = new ChatSaverRunnable(this);
             timer.runTaskTimer(this, internal, internal);
         }
+    }
+
+    private void loadTextHover() {
+        String mainPath = "playerHover";
+        PlayerTextHover playerTextHover = new PlayerTextHover(
+                getConfig().getString(mainPath + ".command"),
+                getConfig().getStringList(mainPath + ".text")
+        );
+
+        KAChatAPI.getInstance().setPlayerTextHover(playerTextHover);
     }
 
     private void stopChatSaver() {

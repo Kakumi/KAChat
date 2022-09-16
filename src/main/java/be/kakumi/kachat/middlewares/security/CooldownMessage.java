@@ -9,10 +9,9 @@ import be.kakumi.kachat.utils.Checker;
 import org.bukkit.entity.Player;
 
 public class CooldownMessage implements Checker {
-    public boolean valid(Player player, String message) throws CheckerException {
+    public boolean valid(Player player, Channel channel, String message) throws CheckerException {
         if (player.hasPermission("kachat.bypass.cooldown")) return true;
 
-        Channel channel = KAChatAPI.getInstance().getPlayerChannel(player);
         LastMessage lastMessage = KAChatAPI.getInstance().getLastMessages().get(player.getUniqueId());
         if (channel.getCooldown() == 0 || lastMessage == null || lastMessage.canSend(channel.getCooldown())) {
             return true;

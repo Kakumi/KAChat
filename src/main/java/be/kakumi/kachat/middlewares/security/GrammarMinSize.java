@@ -2,6 +2,7 @@ package be.kakumi.kachat.middlewares.security;
 
 import be.kakumi.kachat.exceptions.CheckerException;
 import be.kakumi.kachat.exceptions.SecurityMinSizeException;
+import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.Checker;
 import org.bukkit.entity.Player;
 
@@ -11,7 +12,7 @@ public class GrammarMinSize implements Checker {
         this.size = size;
     }
 
-    public boolean valid(Player player, String message) throws CheckerException {
+    public boolean valid(Player player, Channel channel, String message) throws CheckerException {
         if (player.hasPermission("kachat.bypass.minsize")) return true;
 
         if (message.length() < size) {

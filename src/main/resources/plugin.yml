@@ -1,8 +1,8 @@
 name: KAChat
-version: 1.0
+version: 1.5
 main: be.kakumi.kachat.KAChat
 author: Kakumi
-softdepend: [PlaceholderAPI, Vault, ProtocolLib]
+softdepend: [PlaceholderAPI, Vault]
 commands:
   kareload:
     usage: "§cCommand: §f/kareload§c."
@@ -10,11 +10,13 @@ commands:
     permission: kachat.cmd.reload
     permission-message: "§cYou don't have the permission !"
   channel:
+    aliases: ["c"]
     usage: "§cCommand: §f/channel [channel] [player] [-fp (force permission)] [-fw (force world)] [-f (force all)]§c."
     description: Change your channel or use the one by default.
     permission: kachat.cmd.channel
     permission-message: "§cYou don't have the permission !"
   channels:
+    aliases: ["cns"]
     usage: "§cCommand: §f/channels§c."
     description: List all channels available.
     permission: kachat.cmd.channels

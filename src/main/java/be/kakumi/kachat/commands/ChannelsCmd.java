@@ -60,7 +60,7 @@ public class ChannelsCmd implements CommandExecutor {
         int sizeInv = (int) Math.ceil(channelList.size() / (double) 9);
         if (sizeInv > 6) sizeInv = 6;
 
-        Inventory inventory = Bukkit.createInventory(null, sizeInv * 9, name + " §b- §r" + page + "§b/§r" + maxPage);
+        Inventory inventory = Bukkit.createInventory(player, sizeInv * 9, name + " §b- §r" + page + "§b/§r" + maxPage);
 
         for(int i = startIndex; i < channelList.size() && slot < slotMax; i++) {
             if (slot == 45 && page > 1) {
@@ -78,7 +78,7 @@ public class ChannelsCmd implements CommandExecutor {
 
             if (!(channel.getPermissionToUse().equals("") || player.hasPermission(channel.getPermissionToUse()))) {
                 lore.add("");
-                lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION));
+                lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION, false));
             }
 
             ItemStack item = new ItemStack(Material.BOOK, 1);
