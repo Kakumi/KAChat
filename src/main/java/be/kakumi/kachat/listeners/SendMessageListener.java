@@ -6,6 +6,7 @@ import be.kakumi.kachat.events.ChannelReceiveMessageEvent;
 import be.kakumi.kachat.models.Channel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -15,7 +16,7 @@ public class SendMessageListener implements Listener {
         this.main = main;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onSendMessage(AsyncPlayerChatEvent event) {
         if (!event.isCancelled()) {
             event.setCancelled(true);
