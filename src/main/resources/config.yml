@@ -32,10 +32,11 @@ playerHover: #hover event on player's name | #using this disables hex color
 chat:
   format: "{channel} {color}{player}§7: {chat_color}{message}" #Default format
   defaultChannel: "global" #ID of a channel from chat.channels
+  showRestrictedChannels: true #show channels even if the player doesn't match restriction
   channels:
     global:
       enable: true
-      listed: true #List this channel when you used /channel
+      listed: true #List this channel when you used /channels
       autoWorld: "" #Automatically use this channel if player has the permission to use in this world
       prefix: "" #Prefix for this channel
       command: "global" #ID / Name of this channel (also use with /channel)
