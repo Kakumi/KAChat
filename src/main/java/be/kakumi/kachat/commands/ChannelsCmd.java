@@ -1,5 +1,6 @@
 package be.kakumi.kachat.commands;
 
+import be.kakumi.kachat.KAChat;
 import be.kakumi.kachat.api.KAChatAPI;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.MessageManager;
@@ -62,6 +63,7 @@ public class ChannelsCmd implements CommandExecutor {
 
         Inventory inventory = Bukkit.createInventory(player, sizeInv * 9, name + " §b- §r" + page + "§b/§r" + maxPage);
 
+        boolean showRestricted = KAChat.getInstance().getConfig().getBoolean("chat.showRestrictedChannels");
         for(int i = startIndex; i < channelList.size() && slot < slotMax; i++) {
             if (slot == 45 && page > 1) {
                 slot++;
@@ -76,7 +78,17 @@ public class ChannelsCmd implements CommandExecutor {
             lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_WORLD, false) + (channel.getWorld().equals("") ? "/" : channel.getWorld()));
             lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_LORE_SYMBOL, false) + (channel.getOverrideSymbol().equals("") ? "/" : channel.getOverrideSymbol()));
 
+            if (!showRestricted) {
+                if (!channel.getWorld().equalsIgnoreCase("") && !player.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
+                    continue;
+                }
+            }
+
             if (!(channel.getPermissionToUse().equals("") || player.hasPermission(channel.getPermissionToUse()))) {
+                if (!showRestricted) {
+                    continue;
+                }
+
                 lore.add("");
                 lore.add(KAChatAPI.getInstance().getMessageManager().get(MessageManager.NO_PERMISSION, false));
             }

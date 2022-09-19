@@ -1,5 +1,7 @@
 package be.kakumi.kachat.middlewares.message;
 
+import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.Formatter;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -19,9 +21,12 @@ public class MentionPlayer implements Formatter {
     }
 
     public String format(Player player, String message) {
+        Channel channel = KAChatAPI.getInstance().getPlayerChannel(player);
+        String chatColor = KAChatAPI.getInstance().getChatManager().getChatColor(player, channel);
+
         for(Player playerOnline : Bukkit.getServer().getOnlinePlayers()) {
             if (message.contains(symbolToUse + playerOnline.getName())) {
-                message = message.replace(symbolToUse + playerOnline.getName(), color + symbolToSee + playerOnline.getName() + "§f");
+                message = message.replace(symbolToUse + playerOnline.getName(), color + symbolToSee + playerOnline.getName() + chatColor);
 
                 if (playSound) {
                     playerOnline.playSound(playerOnline.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1f);
