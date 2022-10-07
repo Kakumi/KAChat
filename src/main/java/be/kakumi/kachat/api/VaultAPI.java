@@ -54,7 +54,7 @@ public class VaultAPI implements Placeholder {
 
     public String format(Player player, Channel channel, String message) {
         //Economy
-        if (economyLoaded) {
+        if (economyLoaded && economy.isEnabled()) {
             message = message.replace("{vault_eco_name}", economy.getName());
             message = message.replace("{vault_eco_money}", economy.getBalance(player) + "");
             message = message.replace("{vault_eco_money.2f}", String.format("%.1f", economy.getBalance(player)));
@@ -63,7 +63,7 @@ public class VaultAPI implements Placeholder {
         }
 
         //Chat
-        if (chatLoaded) {
+        if (chatLoaded && chat.isEnabled()) {
             message = message.replace("{vault_chat_name}", chat.getName());
             message = message.replace("{vault_chat_player_prefix}", chat.getPlayerPrefix(player));
             message = message.replace("{vault_chat_player_suffix}", chat.getPlayerSuffix(player));
@@ -71,7 +71,7 @@ public class VaultAPI implements Placeholder {
         }
 
         //Permission
-        if (permissionLoaded) {
+        if (permissionLoaded && permission.isEnabled() && permission.hasSuperPermsCompat() && permission.hasGroupSupport()) {
             message = message.replace("{vault_perm_group}", permission.getPrimaryGroup(player));
         }
 

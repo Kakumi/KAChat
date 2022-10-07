@@ -141,6 +141,7 @@ public class KAChatAPI implements Placeholder {
         	String symbol = channel.getOverrideSymbol();
 
             if (StringUtils.isNotEmpty(symbol) && message.startsWith(symbol)) return channel;
+            if (channel.getOverrideWords().size() > 0 && channel.containsOverrideWords(message)) return channel;
         }
 
         return null;

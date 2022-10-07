@@ -5,7 +5,10 @@ import be.kakumi.kachat.exceptions.UpdateChannelCommandException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @SuppressWarnings("rawtypes")
 public class Channel {
@@ -24,6 +27,7 @@ public class Channel {
     private String setAutoWorld;
     private boolean delete;
     private String overrideSymbol;
+    private List<String> overrideWords;
     private HashMap<String, Object> custom;
 
     public Channel(String prefix, String command, String format) {
@@ -41,6 +45,7 @@ public class Channel {
         this.setAutoWorld = "";
         this.delete = true;
         this.overrideSymbol = "";
+        this.overrideWords = new ArrayList<>();
         this.custom = new HashMap<>();
     }
 
@@ -329,6 +334,33 @@ public class Channel {
 	public void setOverrideSymbol(@NotNull String overrideSymbol) {
         this.overrideSymbol = overrideSymbol;
 	}
+
+    /**
+     * Get words of this channel, it will enforce the message to be sent to this channel if it contains any of these words.
+     * @return Words
+     */
+    public List<String> getOverrideWords() {
+        return overrideWords;
+    }
+
+    /**
+     * Set words of this channel, it will enforce the message to be sent to this channel if it contains any of these words.
+     * @return Words
+     */
+    public void setOverrideWords(List<String> overrideWords) {
+        this.overrideWords = overrideWords;
+    }
+
+    /**
+     * Check if the message contains any words used by the channel
+     * @param message
+     * @return true if it contains any words
+     */
+    public boolean containsOverrideWords(String message) {
+        return overrideWords
+                .stream()
+                .anyMatch(x -> Arrays.stream(message.split(" ")).anyMatch(x::equalsIgnoreCase));
+    }
 
     /**
      * Get custom data for this channel using HashMap as key;value

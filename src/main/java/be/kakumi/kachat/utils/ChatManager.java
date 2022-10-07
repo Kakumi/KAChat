@@ -1,8 +1,10 @@
 package be.kakumi.kachat.utils;
 
-import be.kakumi.kachat.KAChat;
 import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.enums.MessageNotSendReason;
+import be.kakumi.kachat.events.ChannelPreSendEvent;
 import be.kakumi.kachat.events.ChannelReceiveMessageEvent;
+import be.kakumi.kachat.events.MessageNotSendEvent;
 import be.kakumi.kachat.exceptions.CheckerException;
 import be.kakumi.kachat.models.Channel;
 import net.md_5.bungee.api.chat.*;
@@ -24,13 +26,25 @@ public class ChatManager {
      * @param channel
      */
     public boolean sendMessage(Player player, String message, Channel channel) {
+        return this.sendMessage(player, message, channel, false);
+    }
+
+    /**
+     * Send a message for a player
+     * @param player
+     * @param message
+     * @param channel
+     * @param bypass Bypass security for the player
+     */
+    public boolean sendMessage(Player player, String message, Channel channel, boolean bypass) {
         try {
             //Format the message only
             for(Formatter formatter : KAChatAPI.getInstance().getMessageFormatters()) {
                 message = formatter.format(player, message);
             }
+
             //Check if message is valid
-            boolean toSend = checkMessage(player, channel, message);
+            boolean toSend = bypass || checkMessage(player, channel, message);
 
             if (toSend) {
                 //Here to be sure we have the format and the message, even if KAChatAPI Formatter is not loaded
@@ -45,35 +59,43 @@ public class ChatManager {
 
                 List<Player> receivers = getValidReceivers(channel, player);
 
-                if (KAChatAPI.getInstance().getPlayerTextHover().getLines().size() > 0) {
-                    //Check and potentially add hover message
-                    String targetHover = null;
-                    if (messageFormat.contains(player.getName())) {
-                        targetHover = player.getName();
-                    } else if (messageFormat.contains(player.getDisplayName())) {
-                        targetHover = player.getDisplayName();
-                    }
+                ChannelPreSendEvent event = new ChannelPreSendEvent(channel, player, receivers, messageFormat, message);
+                Bukkit.getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    if (KAChatAPI.getInstance().getPlayerTextHover().getLines().size() > 0) {
+                        //Check and potentially add hover message
+                        String targetHover = null;
+                        if (messageFormat.contains(player.getName())) {
+                            targetHover = player.getName();
+                        } else if (messageFormat.contains(player.getDisplayName())) {
+                            targetHover = player.getDisplayName();
+                        }
 
-                    if (targetHover != null) {
-                        BaseComponent[] component = generateTextWithHover(messageFormat, player, channel, targetHover);
-
-                        sendMessage(component, receivers);
+                        if (targetHover != null) {
+                            BaseComponent[] component = generateTextWithHover(messageFormat, player, channel, targetHover);
+                            sendMessage(component, receivers);
+                        } else {
+                            sendMessage(messageFormat, receivers);
+                        }
                     } else {
                         sendMessage(messageFormat, receivers);
                     }
-                } else {
-                    sendMessage(messageFormat, receivers);
-                }
 
-                final String messageFormatFinal = messageFormat;
-                final String messageFinal = message;
-                //Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormatFinal, messageFinal, toSend));
-                //Because we can't run event from an asynchronous thread
-                Bukkit.getScheduler().runTaskLater(KAChat.getInstance(), () -> Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormatFinal, messageFinal, toSend)), 1);
+                    Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormat, message));
+                } else {
+                    MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.PLUGIN);
+                    Bukkit.getPluginManager().callEvent(notSendEvent);
+                }
+            } else {
+                MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.SECURITY);
+                Bukkit.getPluginManager().callEvent(notSendEvent);
             }
 
             return toSend;
         } catch (CheckerException e) {
+            MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.SECURITY);
+            Bukkit.getPluginManager().callEvent(notSendEvent);
+
             player.sendMessage(e.getMessage());
         } catch (Exception e2) {
             e2.printStackTrace();
@@ -116,15 +138,13 @@ public class ChatManager {
      * @throws CheckerException
      */
     private boolean checkMessage(Player player, Channel channel, String message) throws CheckerException {
-        boolean toSend = true;
-
         for(Checker checker : KAChatAPI.getInstance().getCheckers()) {
-            if (toSend && !checker.valid(player, channel, message)) {
-                toSend = false;
+            if (!checker.valid(player, channel, message)) {
+                return false;
             }
         }
 
-        return toSend;
+        return true;
     }
 
     /***

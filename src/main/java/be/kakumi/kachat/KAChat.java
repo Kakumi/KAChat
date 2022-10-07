@@ -162,6 +162,9 @@ public class KAChat extends JavaPlugin {
                 } else {
                     channel.setFormat(defaultFormat);
                 }
+                if (getConfig().contains("chat.channels." + name + ".overrideWords")) {
+                    channel.setOverrideWords(getConfig().getStringList("chat.channels." + name + ".overrideWords"));
+                }
                 if (getConfig().contains("chat.channels." + name + ".custom")) {
                     for(String key : getConfig().getConfigurationSection("chat.channels." + name + ".custom").getKeys(false)) {
                         channel.getCustom().put(key, getConfig().get("chat.channels." + name + ".custom." + key));

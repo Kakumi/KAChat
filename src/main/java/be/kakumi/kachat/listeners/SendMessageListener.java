@@ -33,7 +33,7 @@ public class SendMessageListener implements Listener {
         KAChatAPI.getInstance().updateLastMessage(event.getSender(), event.getMessage());
 
         if (KAChatAPI.getInstance().getChatSaver() != null) {
-            KAChatAPI.getInstance().getChatSaver().addMessage(event.getMessageFormat(), event.isPosted());
+            KAChatAPI.getInstance().getChatSaver().addMessage(event.getMessageFormat());
         }
     }
 }

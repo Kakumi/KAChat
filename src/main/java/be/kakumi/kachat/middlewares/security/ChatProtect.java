@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class ChatProtect implements Checker {
     public boolean valid(Player player, Channel channel, String message) throws CheckerException {
-        if (Pattern.matches("^[\\w|\\d]{10,}$", message)) {
+        if (Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&._-]{8,}$", message)) {
             throw new SecurityProtectException();
         }
 
