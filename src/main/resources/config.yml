@@ -47,6 +47,7 @@ chat:
       permissionToUse: "" #Permission to use this channel (/channel)
       permissionToSee: "" #Permission to see message from this channel
       overrideSymbol: "" #If the message starts with this symbol, it will be sent to this channel regardless of which channel the player has joined
+      overrideWords: [] #If the message contains any of these words, it will be sent to this channel regardless of which channel the player has joined, not case-sensitive
       cooldown: 0 #Cooldown between each message for this channel
       custom:
         useAnonyme: true

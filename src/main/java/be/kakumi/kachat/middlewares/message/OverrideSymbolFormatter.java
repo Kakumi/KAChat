@@ -9,7 +9,7 @@ public class OverrideSymbolFormatter implements Formatter {
     public String format(Player player, String message) {
         Channel channel = KAChatAPI.getInstance().getChannelFromMessage(message);
 
-        if (channel != null) {
+        if (channel != null && message.startsWith(channel.getOverrideSymbol())) {
             message = message.substring(channel.getOverrideSymbol().length());
         }
 

@@ -3,6 +3,13 @@ This plugin is a chat manager for minecraft. Avaible from spigot 1.7.10 to 1.16.
 <br>You can create a channel and configure them quite easily to be able to create a lot of chats with permission, world restriction and range. Also, this plugin provides some security checker and formatter like [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/).
 <br>You can use our API to create custom channels and be able to create your behaviour for every chat. You can almost change everything, and it was the goal of this plugin.
 <br>**Actually, this plugin is in version 1.0 so feel free to suggest some ideas and report bugs.**
+
+## TODO
+- Add player's choice to see channels
+- Create channel by GUI
+- Support CustomModelData
+- Refactoring
+
 ## Commands
 - **/kareload**: Reload the config file
 - **/channel [channel] [player] [-fp (force permission)] [-fw (force world)] [-f (force all)]**: Change the channel of someone, or you by default

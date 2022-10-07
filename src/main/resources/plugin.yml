@@ -1,8 +1,9 @@
 name: KAChat
-version: 1.5
+version: 1.6
 main: be.kakumi.kachat.KAChat
 author: Kakumi
 softdepend: [PlaceholderAPI, Vault]
+api-version: 1.13
 commands:
   kareload:
     usage: "§cCommand: §f/kareload§c."
