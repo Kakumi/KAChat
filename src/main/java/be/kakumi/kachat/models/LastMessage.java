@@ -139,15 +139,15 @@ public class LastMessage {
             int emptyWords = 0;
             boolean extraCheck = false; //To know if i + 1 check has been valid one time
 
-            for(int i = 0; i < wordsSmallerMessage.length; i++) {
+            for(int i = 0; i < wordsSmallerMessage.length; i++) { //Salut ça va
                 //Explication on the second compareWords :
                 //We check if the player just don't put a random word before
                 //e.g. : How are you vs Hey how are you
                 //It will check How vs Hey : false, then try How vs How : true
-                String word1 = removePunctuation(wordsSmallerMessage[i]);
+                String word1 = removePunctuation(wordsSmallerMessage[i]); //Salut
                 if (word1.equals("")) {
                     emptyWords++;
-                } else {
+                } else if (i < wordsBiggerMessage.length) {
                     if (compareWords(word1, removePunctuation(wordsBiggerMessage[i]))) {
                         sameWords++;
                     } else if (i + 1 < wordsBiggerMessage.length) {
