@@ -1,5 +1,5 @@
 name: KAChat
-version: 1.6
+version: 1.7
 main: be.kakumi.kachat.KAChat
 author: Kakumi
 softdepend: [PlaceholderAPI, Vault]

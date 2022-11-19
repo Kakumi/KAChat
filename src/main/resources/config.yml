@@ -29,6 +29,8 @@ playerHover: #hover event on player's name | #using this disables hex color
   text: []
     # - "&ePlayer: &7&o{display_name}"
     # - "&eMoney: &7&o{vault_eco_money.2f}"
+replacers:
+  ":'(": ":cry:"
 chat:
   format: "{channel} {color}{player}§7: {chat_color}{message}" #Default format
   defaultChannel: "global" #ID of a channel from chat.channels
