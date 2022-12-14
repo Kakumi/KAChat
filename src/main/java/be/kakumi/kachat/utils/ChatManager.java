@@ -20,78 +20,112 @@ import java.util.stream.Collectors;
 
 public class ChatManager {
     /**
-     * Send a message for a player
+     * Get a final message with prefix and suffix for a player
      * @param player
      * @param message
      * @param channel
      */
-    public boolean sendMessage(Player player, String message, Channel channel) {
-        return this.sendMessage(player, message, channel, false);
+    public String getMessage(Player player, String message, Channel channel) throws CheckerException {
+        return this.getMessage(player, message, channel, false);
     }
 
     /**
-     * Send a message for a player
+     * Get a final message with prefix and suffix for a player
      * @param player
      * @param message
      * @param channel
      * @param bypass Bypass security for the player
      */
+    public String getMessage(Player player, String message, Channel channel, boolean bypass) throws CheckerException {
+        String chatMessage = getChatMessage(player, message);
+
+        //Check if message is valid
+        if (!bypass) {
+            checkMessage(player, channel, chatMessage);
+        }
+
+        //Here to be sure we have the format and the message, even if KAChatAPI Formatter is not loaded
+        String messageFormat = KAChatAPI.getInstance().getChatManager().getChatFormat(channel, player).replace("{message}", chatMessage);
+        //Replace placeholder for the whole message and format
+        for(Placeholder placeholder : KAChatAPI.getInstance().getPlaceholders()) {
+            messageFormat = placeholder.format(player, channel, messageFormat);
+        }
+        //Process all color codes from the original message and the placeholders
+        messageFormat = KAChatAPI.getInstance().processColors(messageFormat);
+        messageFormat = KAChatAPI.getInstance().processBeautifier(messageFormat);
+
+        return messageFormat;
+    }
+
+    /***
+     * Get a final message for a player
+     * @param player
+     * @param message
+     * @return
+     */
+    public String getChatMessage(Player player, String message) {
+        for(Formatter formatter : KAChatAPI.getInstance().getMessageFormatters()) {
+            message = formatter.format(player, message);
+        }
+
+        return message;
+    }
+
+    /**
+     * Send a final message for a player
+     * Deprecated: Please use GetMessage or GetChatMessage
+     * @param player
+     * @param message
+     * @param channel
+     */
+    @Deprecated
+    public boolean sendMessage(Player player, String message, Channel channel) {
+        return this.sendMessage(player, message, channel, false);
+    }
+
+    /**
+     * Send a final message for a player
+     * Deprecated: Please use GetMessage or GetChatMessage
+     * @param player
+     * @param message
+     * @param channel
+     * @param bypass Bypass security for the player
+     */
+    @Deprecated
     public boolean sendMessage(Player player, String message, Channel channel, boolean bypass) {
         try {
-            //Format the message only
-            for(Formatter formatter : KAChatAPI.getInstance().getMessageFormatters()) {
-                message = formatter.format(player, message);
-            }
+            String messageFormat = getMessage(player, message, channel, bypass);
+            List<Player> receivers = getValidReceivers(channel, player);
 
-            //Check if message is valid
-            boolean toSend = bypass || checkMessage(player, channel, message);
+            ChannelPreSendEvent event = new ChannelPreSendEvent(channel, player, receivers, messageFormat, message);
+            Bukkit.getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                if (KAChatAPI.getInstance().getPlayerTextHover().getLines().size() > 0) {
+                    //Check and potentially add hover message
+                    String targetHover = null;
+                    if (messageFormat.contains(player.getName())) {
+                        targetHover = player.getName();
+                    } else if (messageFormat.contains(player.getDisplayName())) {
+                        targetHover = player.getDisplayName();
+                    }
 
-            if (toSend) {
-                //Here to be sure we have the format and the message, even if KAChatAPI Formatter is not loaded
-                String messageFormat = KAChatAPI.getInstance().getChatManager().getChatFormat(channel, player).replace("{message}", message);
-                //Replace placeholder for the whole message and format
-                for(Placeholder placeholder : KAChatAPI.getInstance().getPlaceholders()) {
-                    messageFormat = placeholder.format(player, channel, messageFormat);
-                }
-                //Process all color codes from the original message and the placeholders
-                messageFormat = KAChatAPI.getInstance().processColors(messageFormat);
-                messageFormat = KAChatAPI.getInstance().processBeautifier(messageFormat);
-
-                List<Player> receivers = getValidReceivers(channel, player);
-
-                ChannelPreSendEvent event = new ChannelPreSendEvent(channel, player, receivers, messageFormat, message);
-                Bukkit.getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    if (KAChatAPI.getInstance().getPlayerTextHover().getLines().size() > 0) {
-                        //Check and potentially add hover message
-                        String targetHover = null;
-                        if (messageFormat.contains(player.getName())) {
-                            targetHover = player.getName();
-                        } else if (messageFormat.contains(player.getDisplayName())) {
-                            targetHover = player.getDisplayName();
-                        }
-
-                        if (targetHover != null) {
-                            BaseComponent[] component = generateTextWithHover(messageFormat, player, channel, targetHover);
-                            sendMessage(component, receivers);
-                        } else {
-                            sendMessage(messageFormat, receivers);
-                        }
+                    if (targetHover != null) {
+                        BaseComponent[] component = generateTextWithHover(messageFormat, player, channel, targetHover);
+                        sendMessage(component, receivers);
                     } else {
                         sendMessage(messageFormat, receivers);
                     }
-
-                    Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormat, message));
                 } else {
-                    MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.PLUGIN);
-                    Bukkit.getPluginManager().callEvent(notSendEvent);
+                    sendMessage(messageFormat, receivers);
                 }
+
+                Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormat, message));
+
+                return true;
             } else {
-                MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.SECURITY);
+                MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.PLUGIN);
                 Bukkit.getPluginManager().callEvent(notSendEvent);
             }
-
-            return toSend;
         } catch (CheckerException e) {
             MessageNotSendEvent notSendEvent = new MessageNotSendEvent(player, channel, MessageNotSendReason.SECURITY);
             Bukkit.getPluginManager().callEvent(notSendEvent);

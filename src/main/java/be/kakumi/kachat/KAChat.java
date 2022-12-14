@@ -90,6 +90,7 @@ public class KAChat extends JavaPlugin {
         if (loadMessageManager()) {
             loadChannels();
             loadCheckers();
+            loadReplacers();
             loadMessageFormatters();
             loadChatSaver();
             loadTextHover();
@@ -212,6 +213,16 @@ public class KAChat extends JavaPlugin {
         }
     }
 
+    private void loadReplacers() {
+        KAChatAPI.getInstance().getMessageReplacers().clear();
+
+        if (getConfig().contains("replacers")) {
+            for(String name : getConfig().getConfigurationSection("replacers").getKeys(false)) {
+                KAChatAPI.getInstance().getMessageReplacers().put(name, getConfig().getString("replacers." + name));
+            }
+        }
+    }
+
     private void loadCheckers() {
         KAChatAPI.getInstance().clearCheckers();
 
@@ -235,6 +246,7 @@ public class KAChat extends JavaPlugin {
     private void loadMessageFormatters() {
         KAChatAPI.getInstance().clearMessageFormatters();
 
+        KAChatAPI.getInstance().getMessageFormatters().add(new ReplacersFormatter());
         KAChatAPI.getInstance().getMessageFormatters().add(new OverrideSymbolFormatter());
         //First because others formatter can add color
         KAChatAPI.getInstance().getMessageFormatters().add(new ColorFormatter());

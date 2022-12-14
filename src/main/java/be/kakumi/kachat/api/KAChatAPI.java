@@ -26,6 +26,7 @@ public class KAChatAPI implements Placeholder {
     private Channel defaultChannel; //Default channel to use
     private List<Channel> channels; //List of registered channels (with /channel)
     private HashMap<UUID, Channel> playersChannel; //List of users channel
+    private HashMap<String, String> messageReplacers; //List of replacers for the message
     private ChatManager chatManager; //Chat manager
     private ChatSaver chatSaver; //Chat saver
     private List<Checker> checkers; //Checkers list
@@ -41,6 +42,7 @@ public class KAChatAPI implements Placeholder {
         this.defaultChannel = null;
         this.channels = new ArrayList<>();
         this.playersChannel = new HashMap<>();
+        this.messageReplacers = new HashMap<>();
         this.chatSaver = null;
         this.chatManager = new ChatManager();
         this.checkers = new ArrayList<>();
@@ -494,5 +496,13 @@ public class KAChatAPI implements Placeholder {
         }
 
         return message;
+    }
+
+    /**
+     * Get all replacers for the message
+     * @return HashMap<String, String> with key = detector, value = replaced by
+     */
+    public HashMap<String, String> getMessageReplacers() {
+        return messageReplacers;
     }
 }
