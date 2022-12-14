@@ -7,8 +7,7 @@ import be.kakumi.kachat.events.ChannelReceiveMessageEvent;
 import be.kakumi.kachat.events.MessageNotSendEvent;
 import be.kakumi.kachat.exceptions.CheckerException;
 import be.kakumi.kachat.models.Channel;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -100,24 +99,7 @@ public class ChatManager {
             ChannelPreSendEvent event = new ChannelPreSendEvent(channel, player, receivers, messageFormat, message);
             Bukkit.getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
-                if (KAChatAPI.getInstance().getPlayerTextHover().getLines().size() > 0) {
-                    //Check and potentially add hover message
-                    String targetHover = null;
-                    if (messageFormat.contains(player.getName())) {
-                        targetHover = player.getName();
-                    } else if (messageFormat.contains(player.getDisplayName())) {
-                        targetHover = player.getDisplayName();
-                    }
-
-                    if (targetHover != null) {
-                        BaseComponent[] component = generateTextWithHover(messageFormat, player, channel, targetHover);
-                        sendMessage(component, receivers);
-                    } else {
-                        sendMessage(messageFormat, receivers);
-                    }
-                } else {
-                    sendMessage(messageFormat, receivers);
-                }
+                sendMessage(messageFormat, receivers);
 
                 Bukkit.getPluginManager().callEvent(new ChannelReceiveMessageEvent(channel, player, receivers, messageFormat, message));
 
@@ -136,32 +118,6 @@ public class ChatManager {
         }
 
         return false;
-    }
-
-    private BaseComponent[] generateTextWithHover(String messageFormat, Player player, Channel channel, String targetHover) {
-        int index = messageFormat.indexOf(targetHover);
-        String before = messageFormat.substring(0, index);
-        String after = messageFormat.substring(index + targetHover.length());
-        TextComponent textComponent = new TextComponent(targetHover);
-        String command = KAChatAPI.getInstance().getPlayerTextHover().getCommand();
-        String hover = String.join("\n", KAChatAPI.getInstance().getPlayerTextHover().getLines());
-        for(Placeholder placeholder : KAChatAPI.getInstance().getPlaceholders()) {
-            command = placeholder.format(player, channel, command);
-            hover = placeholder.format(player, channel, hover);
-        }
-
-        //Process all color codes from the original message and the placeholders
-        hover = KAChatAPI.getInstance().processColors(hover);
-        hover = KAChatAPI.getInstance().processBeautifier(hover);
-
-        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + command));
-        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover)));
-
-        ComponentBuilder mainComponent = new ComponentBuilder(before);
-        mainComponent.append(textComponent);
-        mainComponent.append(after);
-
-        return mainComponent.create();
     }
 
     /**
