@@ -121,7 +121,7 @@ public class ChatManager {
     }
 
     /**
-     * Check if a message is valid using cherckers
+     * Check if a message is valid using checkers
      * @param player
      * @param message
      * @return true if message is valid
