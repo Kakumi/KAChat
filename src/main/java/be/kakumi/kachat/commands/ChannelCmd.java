@@ -2,6 +2,7 @@ package be.kakumi.kachat.commands;
 
 import be.kakumi.kachat.api.KAChatAPI;
 import be.kakumi.kachat.enums.PlayerChangeChannelReason;
+import be.kakumi.kachat.events.GetChannelListEvent;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.MessageManager;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class ChannelCmd implements CommandExecutor {
@@ -27,7 +29,6 @@ public class ChannelCmd implements CommandExecutor {
                 commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.MUST_BE_A_PLAYER));
             }
         } else {
-            Channel channel = KAChatAPI.getInstance().getChannelFromCommand(strings[0]);
             Player playerToChange = null;
             PlayerChangeChannelReason reason;
             String fullCommand = StringUtils.join(strings, " ");
@@ -59,10 +60,22 @@ public class ChannelCmd implements CommandExecutor {
             }
 
             if (playerToChange != null) {
+                List<Channel> tempChannels = KAChatAPI.getInstance().getChannels();
+                GetChannelListEvent getChannelListEvent = new GetChannelListEvent(playerToChange, tempChannels);
+                Bukkit.getPluginManager().callEvent(getChannelListEvent);
+                List<Channel> channelList = getChannelListEvent.getChannels();
+                Channel channel = null;
+                for(Channel channelInList : channelList) {
+                    if (channelInList.getCommand().equalsIgnoreCase(strings[0])) {
+                        channel = channelInList;
+                        break;
+                    }
+                }
+
                 if (channel == null) {
                     commandSender.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_DOESNT_EXIST));
                     StringBuilder available = new StringBuilder();
-                    for (Channel channelNext : KAChatAPI.getInstance().getChannels()) {
+                    for (Channel channelNext : channelList) {
                         if (channelNext.isListed()) {
                             if (!available.toString().equals("")) {
                                 available.append("§c§l - ");
