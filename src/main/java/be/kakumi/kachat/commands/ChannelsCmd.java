@@ -44,7 +44,7 @@ public class ChannelsCmd implements CommandExecutor {
     private Inventory createInventory(int page, Player player) {
         int slotMax = 54;
         String name = KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_TITLE, false);
-        List<Channel> tempChannels = KAChatAPI.getInstance().getChannels().stream().filter(Channel::isListed).collect(Collectors.toList());
+        List<Channel> tempChannels = KAChatAPI.getInstance().getChannels().stream().filter(x -> x.isListed() && (x.hasPermissionToUse(player) || x.hasPermissionToSee(player))).collect(Collectors.toList());
         GetChannelListEvent event = new GetChannelListEvent(player, tempChannels);
         Bukkit.getPluginManager().callEvent(event);
         List<Channel> channelList = event.getChannels();
