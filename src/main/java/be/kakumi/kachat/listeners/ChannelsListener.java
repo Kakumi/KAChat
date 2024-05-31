@@ -39,7 +39,7 @@ public class ChannelsListener implements Listener {
                             player.performCommand("channels " + (page + 1));
                         }
                     } else {
-                        List<Channel> tempChannels = KAChatAPI.getInstance().getChannels().stream().filter(Channel::isListed).collect(Collectors.toList());
+                        List<Channel> tempChannels = KAChatAPI.getInstance().getChannels().stream().filter(x -> x.isListed() && (x.hasPermissionToUse(player) || x.hasPermissionToSee(player))).collect(Collectors.toList());
                         GetChannelListEvent getChannelListEvent = new GetChannelListEvent(player, tempChannels);
                         Bukkit.getPluginManager().callEvent(getChannelListEvent);
                         List<Channel> channelList = getChannelListEvent.getChannels();
@@ -61,7 +61,7 @@ public class ChannelsListener implements Listener {
                     }
                 }
             } else {
-                ((Player) event.getWhoClicked()).sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.ERROR_OCCURRED));
+                event.getWhoClicked().sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.ERROR_OCCURRED));
             }
         }
     }

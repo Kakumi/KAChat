@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -60,12 +61,12 @@ public class ChannelCmd implements CommandExecutor {
             }
 
             if (playerToChange != null) {
-                List<Channel> tempChannels = KAChatAPI.getInstance().getChannels();
+                List<Channel> tempChannels = new ArrayList<>(KAChatAPI.getInstance().getChannels());
                 GetChannelListEvent getChannelListEvent = new GetChannelListEvent(playerToChange, tempChannels);
                 Bukkit.getPluginManager().callEvent(getChannelListEvent);
                 List<Channel> channelList = getChannelListEvent.getChannels();
                 Channel channel = null;
-                for(Channel channelInList : channelList) {
+                for (Channel channelInList : channelList) {
                     if (channelInList.getCommand().equalsIgnoreCase(strings[0])) {
                         channel = channelInList;
                         break;
