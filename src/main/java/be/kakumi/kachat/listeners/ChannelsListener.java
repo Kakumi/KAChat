@@ -44,18 +44,20 @@ public class ChannelsListener implements Listener {
                         Bukkit.getPluginManager().callEvent(getChannelListEvent);
                         List<Channel> channelList = getChannelListEvent.getChannels();
 
-                        Channel channel = channelList.get(slot);
-                        if (channel != null) {
-                            if (channel.hasPermissionToUse(player)) {
-                                if (channel.getWorld().equals("") || player.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
-                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, Collections.singletonList(channel.getCommand())));
-                                    KAChatAPI.getInstance().setPlayerChannel(player, channel, PlayerChangeChannelReason.COMMAND);
-                                    player.closeInventory();
+                        if (slot < channelList.size()) {
+                            Channel channel = channelList.get(slot);
+                            if (channel != null) {
+                                if (channel.hasPermissionToUse(player)) {
+                                    if (channel.getWorld().equals("") || player.getWorld().getName().equalsIgnoreCase(channel.getWorld())) {
+                                        player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_SET_MYSELF, Collections.singletonList(channel.getCommand())));
+                                        KAChatAPI.getInstance().setPlayerChannel(player, channel, PlayerChangeChannelReason.COMMAND);
+                                        player.closeInventory();
+                                    } else {
+                                        player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, Collections.singletonList(channel.getWorld())));
+                                    }
                                 } else {
-                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_WRONG_WORLD_MYSELF, Collections.singletonList(channel.getWorld())));
+                                    player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_MYSELF));
                                 }
-                            } else {
-                                player.sendMessage(KAChatAPI.getInstance().getMessageManager().get(MessageManager.CHANNEL_NO_PERMISSION_USE_MYSELF));
                             }
                         }
                     }

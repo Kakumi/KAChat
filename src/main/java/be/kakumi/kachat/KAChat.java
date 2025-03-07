@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -136,7 +137,7 @@ public class KAChat extends JavaPlugin {
         String defaultChannelCode = getConfig().getString("chat.defaultChannel");
         Channel defaultChannel = null;
 
-        for(String name : getConfig().getConfigurationSection("chat.channels").getKeys(false)) {
+        for (String name : getConfig().getConfigurationSection("chat.channels").getKeys(false)) {
             if (getConfig().getBoolean("chat.channels." + name + ".enable")) {
                 Channel channel = new Channel(
                         getConfig().getString("chat.channels." + name + ".prefix"),
@@ -167,7 +168,7 @@ public class KAChat extends JavaPlugin {
                     channel.setOverrideWords(getConfig().getStringList("chat.channels." + name + ".overrideWords"));
                 }
                 if (getConfig().contains("chat.channels." + name + ".custom")) {
-                    for(String key : getConfig().getConfigurationSection("chat.channels." + name + ".custom").getKeys(false)) {
+                    for (String key : getConfig().getConfigurationSection("chat.channels." + name + ".custom").getKeys(false)) {
                         channel.getCustom().put(key, getConfig().get("chat.channels." + name + ".custom." + key));
                     }
                 }
@@ -186,7 +187,8 @@ public class KAChat extends JavaPlugin {
 
         //Atfer reload, if players are using a deleted channel we remove from the list, else, we update in case that
         //the channel has been updated in the config file.
-        for(Map.Entry<UUID, Channel> entry : KAChatAPI.getInstance().getPlayersChannel().entrySet()) {
+        HashMap<UUID, Channel> playersChannel = new HashMap<>(KAChatAPI.getInstance().getPlayersChannel());
+        for (Map.Entry<UUID, Channel> entry : playersChannel.entrySet()) {
             Channel newChannel = KAChatAPI.getInstance().getChannelFromCommand(entry.getValue().getCommand());
             KAChatAPI.getInstance().getPlayersChannel().remove(entry.getKey());
             Player playerFound = Bukkit.getServer().getPlayer(entry.getKey());
@@ -217,7 +219,7 @@ public class KAChat extends JavaPlugin {
         KAChatAPI.getInstance().getMessageReplacers().clear();
 
         if (getConfig().contains("replacers")) {
-            for(String name : getConfig().getConfigurationSection("replacers").getKeys(false)) {
+            for (String name : getConfig().getConfigurationSection("replacers").getKeys(false)) {
                 KAChatAPI.getInstance().getMessageReplacers().put(name, getConfig().getString("replacers." + name));
             }
         }
