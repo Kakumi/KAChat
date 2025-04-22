@@ -69,7 +69,7 @@ public class ChannelsCmd implements CommandExecutor {
         Inventory inventory = Bukkit.createInventory(player, sizeInv * 9, name + " §b- §r" + page + "§b/§r" + maxPage);
 
         boolean showRestricted = KAChat.getInstance().getConfig().getBoolean("chat.showRestrictedChannels");
-        for(int i = startIndex; i < channelList.size() && slot < slotMax; i++) {
+        for (int i = startIndex; i < channelList.size() && slot < slotMax; i++) {
             if (slot == 45 && page > 1) {
                 slot++;
             }
@@ -101,7 +101,12 @@ public class ChannelsCmd implements CommandExecutor {
             ItemStack item = new ItemStack(Material.BOOK, 1);
             ItemMeta meta = item.getItemMeta();
             assert meta != null;
-            meta.setDisplayName("§f" + channel.getCommand());
+            String displayName = channel.getPrefix().replace("&", "§");
+            if (displayName.trim().equalsIgnoreCase("")) {
+                displayName = channel.getCommand();
+            }
+            
+            meta.setDisplayName("§f" + displayName);
             meta.setLore(lore);
             item.setItemMeta(meta);
 
