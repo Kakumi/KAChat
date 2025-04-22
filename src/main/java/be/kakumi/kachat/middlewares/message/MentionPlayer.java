@@ -29,7 +29,7 @@ public class MentionPlayer implements Formatter {
                 message = message.replace(symbolToUse + playerOnline.getName(), color + symbolToSee + playerOnline.getName() + chatColor);
 
                 if (playSound) {
-                    playerOnline.playSound(playerOnline.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1f);
+                    playerOnline.playSound(playerOnline.getLocation(), Sound.BLOCK_NOTE_PLING, 100, 1f);
                 }
             }
         }

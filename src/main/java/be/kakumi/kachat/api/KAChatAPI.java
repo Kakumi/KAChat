@@ -491,7 +491,7 @@ public class KAChatAPI implements Placeholder {
         Matcher match = pattern.matcher(message);
         while (match.find()) {
             String color = message.substring(match.start(), match.end());
-            message = message.replace(color, net.md_5.bungee.api.ChatColor.of(color) + "");
+            message = message.replace(color, ChatColor.valueOf(color) + "");
             match = pattern.matcher(message);
         }
 

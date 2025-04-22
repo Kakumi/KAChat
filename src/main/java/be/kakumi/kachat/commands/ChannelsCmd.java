@@ -2,6 +2,7 @@ package be.kakumi.kachat.commands;
 
 import be.kakumi.kachat.KAChat;
 import be.kakumi.kachat.api.KAChatAPI;
+import be.kakumi.kachat.events.GetChannelListEvent;
 import be.kakumi.kachat.models.Channel;
 import be.kakumi.kachat.utils.MessageManager;
 import org.bukkit.Bukkit;
@@ -43,7 +44,11 @@ public class ChannelsCmd implements CommandExecutor {
     private Inventory createInventory(int page, Player player) {
         int slotMax = 54;
         String name = KAChatAPI.getInstance().getMessageManager().get(MessageManager.INVENTORY_CHANNELS_TITLE, false);
-        List<Channel> channelList = KAChatAPI.getInstance().getChannels().stream().filter(Channel::isListed).collect(Collectors.toList());
+        List<Channel> tempChannels = KAChatAPI.getInstance().getChannels().stream().filter(x -> x.isListed() && (x.hasPermissionToUse(player) || x.hasPermissionToSee(player))).collect(Collectors.toList());
+        GetChannelListEvent event = new GetChannelListEvent(player, tempChannels);
+        Bukkit.getPluginManager().callEvent(event);
+        List<Channel> channelList = event.getChannels();
+
         int startIndex = (page - 1) * slotMax;
         if (page > 1) { //We remove arrows from previous page
             startIndex = startIndex - ((page - 2) * 2) - 1;
@@ -64,7 +69,7 @@ public class ChannelsCmd implements CommandExecutor {
         Inventory inventory = Bukkit.createInventory(player, sizeInv * 9, name + " §b- §r" + page + "§b/§r" + maxPage);
 
         boolean showRestricted = KAChat.getInstance().getConfig().getBoolean("chat.showRestrictedChannels");
-        for(int i = startIndex; i < channelList.size() && slot < slotMax; i++) {
+        for (int i = startIndex; i < channelList.size() && slot < slotMax; i++) {
             if (slot == 45 && page > 1) {
                 slot++;
             }
@@ -96,7 +101,12 @@ public class ChannelsCmd implements CommandExecutor {
             ItemStack item = new ItemStack(Material.BOOK, 1);
             ItemMeta meta = item.getItemMeta();
             assert meta != null;
-            meta.setDisplayName("§f" + channel.getCommand());
+            String displayName = channel.getPrefix().replace("&", "§");
+            if (displayName.trim().equalsIgnoreCase("")) {
+                displayName = channel.getCommand();
+            }
+            
+            meta.setDisplayName("§f" + displayName);
             meta.setLore(lore);
             item.setItemMeta(meta);
 

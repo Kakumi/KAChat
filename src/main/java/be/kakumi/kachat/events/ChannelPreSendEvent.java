@@ -11,14 +11,12 @@ import java.util.List;
 
 public class ChannelPreSendEvent extends Event implements Cancellable {
     private final static HandlerList HANDLERS = new HandlerList();
-
-    private boolean cancelled;
-
     private final Channel channel;
     private final Player sender;
     private final List<Player> receivers;
     private final String messageFormat;
     private final String message;
+    private boolean cancelled;
 
     public ChannelPreSendEvent(Channel channel, Player sender, List<Player> receivers, String messageFormat, String message) {
         super(true);
@@ -29,6 +27,10 @@ public class ChannelPreSendEvent extends Event implements Cancellable {
         this.receivers = receivers;
         this.messageFormat = messageFormat;
         this.message = message;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     @Override

@@ -9,15 +9,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class MessageNotSendEvent extends Event {
     private final static HandlerList HANDLERS = new HandlerList();
-    private Player player;
-    private Channel channel;
-    private MessageNotSendReason reason;
+    private final Player player;
+    private final Channel channel;
+    private final MessageNotSendReason reason;
 
     public MessageNotSendEvent(@NotNull Player who, Channel channel, MessageNotSendReason reason) {
         super(true);
         this.player = who;
         this.channel = channel;
         this.reason = reason;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     @NotNull
